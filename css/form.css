@@ -1,0 +1,45 @@
+.formHolder {
+    padding: 25px;
+    display:inline-block;
+    background-color: rgba(255,255,255,0.5);
+    font-family: "Agency FB";
+    font-size:16px;
+
+
+    border:2px solid black;
+}
+
+.inputLabel {
+    display:inline-block;
+    width: 150px;
+    text-align: left;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+
+.textInput {
+    padding: 2px 10px;
+    display:inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.submitBtn {
+    padding: 5px 15px;
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #1f36ff;
+    transition: all 0.2s ease;
+    border:3px solid #1f36ff;
+}
+
+.submitBtn:hover {
+    background-color: #4d5cff;
+}
+
+.errorOutput {
+    display: inline-block;
+}
