@@ -28,9 +28,6 @@ class Header {
                 <div class="menuItem">
                     Menu Item 4
                 </div>
-                <div class="menuItem" id="loginLink">
-                    <a href="index.php?page=login">Log In</a>
-                </div>
 
             </div>
 

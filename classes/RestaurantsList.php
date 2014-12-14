@@ -4,13 +4,14 @@ class RestaurantsList {
 
     function displayList() {
         ?>
-        <div ng-controller="restaurantsList" class="restaurantsList">
+        <div ng-app = "restaurants" ng-controller="restaurantsList" class="restaurantsList">
             <div class="search">
                 <input type="text" class="searchInput" ng-model="search" placeholder="Filter results..." />
+                <input type="text" class="searchInput" ng-model="value" placeholder="orderby..." />
                 <img src="resources/images/searchIcon.png" class="searchIcon" />
             </div>
 
-            <div ng-repeat="restaurant in restaurants | filter:search" class="restaurantPreview">
+            <div ng-repeat="(index,restaurant) in restaurants | filter:search" class="restaurantPreview">
                 <img ng-src="{{restaurant.img}}" class="restaurantImagePreview" />
                 <div class="restaurantDetails">
                     <h2 class="restaurantName">{{ restaurant.name }}</h2>

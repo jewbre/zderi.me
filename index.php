@@ -8,28 +8,26 @@
     <script type="text/javascript" src="js/jQuery.js"></script>
     <script type="text/javascript" src="js/angulasApp.js"></script>
     <script type="text/javascript" src="js/jQueryCode.js"></script>
-    <script type="text/javascript" src="js/form.js"></script>
+
 </head>
-<body ng-app="restaurants">
+<body>
 
     <?php
         include_once "classes/RestaurantsList.php";
         include_once "classes/Header.php";
-        include_once "classes/Login.php";
-        include_once "classes/Registration.php";
         include_once "resources/strings.php";
         include_once "resources/functions.php";
+        include_once "View/RegistrationV.php";
+
         $header = new Header();
         $header->displayHeader();
-
-        echo "<br>";
-
         if(isset($_GET['page'])) {
+            echo isSessionActive();
             if(isSessionActive()) {
                 $page = $_GET['page'];
 
                 if ($page == "registration") {
-                    $registration = new Registration();
+                    $registration = new RegistrationV();
                     $registration->displayView();
                 } else if ($page == "login") {
                     $login = new Login();
@@ -40,7 +38,7 @@
                 }
             } else {
                 if($_GET['page']=="registration") {
-                    $registration = new Registration();
+                    $registration = new RegistrationV();
                     $registration->displayView();
                 } else {
                     $login = new Login();
