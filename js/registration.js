@@ -51,13 +51,19 @@ app.controller("registrationCtrl", function($scope) {
                           userType: $scope.userType
                       }
                   }).success(function (msg) {
-                      window.location.href = "index.php";
+                      $scope.error = "Registration successful. You'll be redirected to home page in few seconds.";
+                      $scope.$apply();
+                      setTimeout(function() {
+                          window.location.href = "index.php";
+                      }, 10000);
                     })
-                  }
+                  } else {
+                    $scope.error = "Username or email duplication.";
+              }
            });
        }
        else {
-           console.log($scope.userType);
+
        }
    }
 

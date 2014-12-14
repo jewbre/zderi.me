@@ -10,10 +10,14 @@ class RegistrationV {
     public function displayView() {
         ?>
         <script src="js/registration.js"></script>
-        <div ng-app="registrationApp" ng-controller="registrationCtrl">
-            <input type="radio" ng-model="userType" value="1">User<br/>
-            <input type="radio" ng-model="userType" value="2">Host<br/>
-            <input type="radio" ng-model="userType" value="3">Supplier<br/>
+        <link href="css/registration.css" rel="stylesheet" type="text/css" />
+        <div ng-app="registrationApp" ng-controller="registrationCtrl" class="registrationWindow">
+            <p ng-bind="error"></p><br>
+
+
+            <input type="radio" ng-model="userType" value="1"><span>User</span>
+            <input type="radio" ng-model="userType" value="2"><span>Host</span>
+            <input type="radio" ng-model="userType" value="3"><span>Supplier</span><br>
             <label>Username:</label>
             <input type="text" ng-model="username" placeholder="Username">
             <br>
@@ -32,8 +36,9 @@ class RegistrationV {
             <label>Last Name:</label>
             <input type="text" ng-model="lastName" placeholder="Last Name">
             <br>
-            <button ng-click="validateForm()">Register</button>
-            <p ng-bind="error"></p>
+            <button ng-click="validateForm()" class="submitBtn">Register</button>
+            <a href="index.php"><button class="cancelBtn">Cancel</button></a>
+
         </div>
 
     <?php

@@ -1,0 +1,64 @@
+.registrationWindow {
+    padding-top: 25px;
+    display:inline-block;
+    background-color: rgba(255,255,255,0.8);
+    font-family: "Agency FB";
+    font-size:16px;
+    width:900px;
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
+}
+
+.registrationWindow label {
+    display:inline-block;
+    width: 150px;
+    text-align: left;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+
+.registrationWindow span {
+    display:inline-block;
+    width: 50px;
+    text-align: left;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.registrationWindow input {
+    padding: 2px 10px;
+    display:inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.15s ease;
+    margin-bottom: 15px;
+}
+
+.registrationWindow .submitBtn, .registrationWindow .cancelBtn{
+    padding: 5px 15px;
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.registrationWindow .submitBtn {
+    background-color: #1f36ff;
+    border:3px solid #1f36ff;
+}
+
+
+.registrationWindow .cancelBtn {
+    background-color: #ff283a;
+    border:3px solid #ff283a;
+}
+
+.registrationWindow .submitBtn:hover {
+    background-color: #4d5cff;
+}
+
+
+.registrationWindow .cancelBtn:hover {
+    background-color: #ff4f52;
+}

@@ -2,11 +2,9 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="css/design.css">
-    <link rel="stylesheet" type="text/css" href="css/form.css">
 
     <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript" src="js/jQuery.js"></script>
-    <script type="text/javascript" src="js/angulasApp.js"></script>
     <script type="text/javascript" src="js/jQueryCode.js"></script>
 
 </head>
@@ -18,6 +16,7 @@
         include_once "resources/strings.php";
         include_once "resources/functions.php";
         include_once "View/RegistrationV.php";
+        include_once "View/RestaurantsV.php";
 
         $header = new Header();
         $header->displayHeader();
@@ -33,7 +32,7 @@
                     $login = new Login();
                     $login->displayView();
                 } else {
-                    $view = new RestaurantsList();
+                    $view = new RestaurantsV();
                     $view->displayList();
                 }
             } else {
@@ -49,7 +48,7 @@
                 // header("Location: ../index.php?page=login&errorNmbr=1&redirect=
             }
         } else {
-            $view = new RestaurantsList();
+            $view = new RestaurantsV();
             $view->displayList();
         }
 

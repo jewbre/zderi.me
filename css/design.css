@@ -9,49 +9,6 @@ body {
     background-color: rgba(0,0,0,0.15);
 }
 
-.restaurantImagePreview {
-    max-height: 180px;
-    max-width: 180px;
-    border: 3px solid rgba(146,146,146,0.6);
-    transition: all 0.15s ease;
-    display:inline-block;
-    vertical-align: top;
-    margin:10px;
-}
-
-.restaurantImagePreview:hover {
-    border: 3px solid rgba(146,146,146,1);
-}
-
-.restaurantPreview {
-    padding:10px;
-    border:1px solid #d8ddda;
-    display:inline-block;
-    transition:all 0.15s ease;
-    cursor: pointer;
-    background-color: rgba(255,255,255,0.5);
-}
-
-.restaurantPreview:hover {
-    box-shadow: inset 0px 0px 10px rgba(109,128,50,1);
-    background-color: rgba(255,255,255,0.9);
-
-}
-
-.restaurantDetails {
-    display:inline-block;
-    max-width: 219px;
-    height: 170px;
-    text-align: left;
-}
-
-.restaurantsList {
-    display:inline-block;
-    text-align:center;
-    width: 900px;
-    position:relative;
-}
-
 .header {
     width:900px;
     display:inline-block;
