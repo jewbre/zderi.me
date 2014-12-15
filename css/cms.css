@@ -103,3 +103,37 @@ body {
 
 
 
+
+.saveBtn, .cancelBtn, .editBtn {
+    color:#ffffff;
+    padding:5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.saveBtn {
+    background-color: #2517DA;
+    border:2px solid #2517DA;
+}
+.saveBtn:hover {
+    background-color: #6352ff;
+}
+
+.cancelBtn {
+    background-color: #E73827;
+    border: 2px solid #E73827;
+}
+.cancelBtn:hover{
+    background-color: #F16F5C;
+}
+
+.editBtn{
+    background-color: #e7790f;
+    border: 2px solid #e7790f;
+}
+.editBtn:hover{
+    background-color: #e79c4a;
+}
+
+
+

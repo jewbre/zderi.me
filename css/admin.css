@@ -1,0 +1,66 @@
+label {
+    display:inline-block;
+    width: 130px;
+    text-align: left;
+    vertical-align: middle;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    padding: 2px 10px;
+    display:inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.15s ease;
+    width:150px;
+    margin-bottom: 10px;
+}
+
+.editUser {
+    display:none;
+}
+
+.usersHolder, .ingredientsList {
+    margin-top:10px;
+    border-top:2px solid black;
+    padding-top: 10px;
+}
+.user {
+    display:inline-block;
+    vertical-align: middle;
+    background-color: rgba(188, 198, 189, 0.60);
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.8);
+    opacity:0.6;
+    transition: all 0.15s ease-in-out;
+    padding:10px;
+    margin:5px;
+}
+
+.user:hover {
+    opacity: 1;
+}
+
+.user h3 {
+    margin:5px 0px;
+}
+
+.user p {
+    margin:0 auto;
+}
+
+.ingredient {
+    display:inline-block;
+    padding:5px 10px;
+}
+.ingredient p{
+    display:inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.ingredient img {
+    display:inline-block;
+    vertical-align: middle;
+    height:15px;
+    cursor: pointer;
+}

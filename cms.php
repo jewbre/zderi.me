@@ -14,6 +14,7 @@
 include_once "resources/strings.php";
 include_once "resources/functions.php";
 include_once "View/HostV.php";
+include_once "View/AdminV.php";
 
 ?>
 </body>
@@ -23,12 +24,18 @@ include_once "View/HostV.php";
     <div class="separateLine"></div>
 
 <?php
-    $userType = 2;
+    $userType = 4;
 
     switch($userType) {
         case 2:
             $host = new HostV();
             $host->displayView();
+            break;
+
+
+        case 4:
+            $admin = new AdminV();
+            $admin->displayView();
             break;
 
         default: ?>
