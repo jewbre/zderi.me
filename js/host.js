@@ -6,6 +6,13 @@ var app = angular.module("hostApp",[]);
 
 app.controller("hostCtrl",function($scope){
 
+    //////////////////////////////////////////////
+    // RESTAURANTS
+    // Following is the logic for implementing
+    // restaurants functionality of the SPA
+    //////////////////////////////////////////////
+
+
     // Data preparing
     $.ajax({
         url : "php/host/",
@@ -40,24 +47,45 @@ app.controller("hostCtrl",function($scope){
         // 1 - show add new restaurant
         // 2 - hide add new restaurant and empty it
         // 3 - show edit restoraunt
+        // 4 - show add new meal
+        // 5 - hide add new meal and empty it
+        // 6 - show edit meal
         switch(index){
             case 1:
-                $(".newBtn").fadeOut("normal");
+                $(".newResBtn").fadeOut("normal");
                 $(".newRestaurantHolder").slideDown("slow");
-                $(".saveBtn").fadeIn("fast");
-                $(".saveEditBtn").fadeOut("fast");
+                $(".saveResBtn").fadeIn("fast");
+                $(".saveResEditBtn").fadeOut("fast");
                 break;
             case 2:
-                $(".newBtn").fadeIn("normal");
+                $(".newResBtn").fadeIn("normal");
                 $(".newRestaurantHolder").slideUp("slow");
-                $scope.newRestaurant = $scope.undefinedEmpty;
+                $scope.newRestaurant = $scope.undefinedEmptyRestaurant;
                 $scope.seatingPlaces = JSON.parse("{}");
                 break;
             case 3:
-                $(".newBtn").fadeOut("normal");
+                $(".newResBtn").fadeOut("normal");
                 $(".newRestaurantHolder").slideDown("slow");
-                $(".saveBtn").fadeOut("fast");
-                $(".saveEditBtn").fadeIn("fast");
+                $(".saveResBtn").fadeOut("fast");
+                $(".saveResEditBtn").fadeIn("fast");
+                break;
+            case 4:
+                $(".newMealBtn").fadeOut("normal");
+                $(".newMealHolder").slideDown("slow");
+                $(".saveMealBtn").fadeIn("fast");
+                $(".saveMealEditBtn").fadeOut("fast");
+                break;
+            case 5:
+                $(".newMealBtn").fadeIn("normal");
+                $(".newMealHolder").slideUp("slow");
+                $scope.newMeal = $scope.undefinedEmptyMeal;
+                $scope.normative = JSON.parse("{}");
+                break;
+            case 6:
+                $(".newMealBtn").fadeOut("normal");
+                $(".newMealHolder").slideDown("slow");
+                $(".saveMealBtn").fadeOut("fast");
+                $(".saveMealEditBtn").fadeIn("fast");
                 break;
         }
     }
@@ -66,7 +94,7 @@ app.controller("hostCtrl",function($scope){
 
 
     // Restaurant preview and adding new
-    $scope.undefinedEmpty = $scope.newRestaurant;
+    $scope.undefinedEmptyRestaurant = $scope.newRestaurant;
     $scope.seatingPlaces = JSON.parse("{}");
     $scope.tableCapacity = 2;
     $scope.numberOfTables = 1;
@@ -213,6 +241,212 @@ app.controller("hostCtrl",function($scope){
             })
         }
     }
+
+
+
+    //////////////////////////////////////////////
+    // MEALS
+    // Following is the logic for implementing
+    // meals functionality of the SPA
+    //////////////////////////////////////////////
+
+    // Preparing the data
+    $scope.undefinedEmptyMeal = $scope.newMeal;
+    $scope.normative = JSON.parse("{}");
+    $scope.ingredientUnit = "g";
+    $scope.ingredientAmount = 1;
+
+    //Get ingredients
+    $.ajax({
+        url : "php/admin/",
+        type : "POST",
+        data : {
+            calltype : 3
+        }
+    }).success(function(msg){
+        $scope.ingredients = JSON.parse(msg);
+        $scope.$apply();
+    })
+
+    // Get meals for restaurant
+    $scope.getMeals = function() {
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype: 5,
+                restaurantId : $scope.selectMealRestaurant.id
+            }
+        }).success(function(msg){
+            $scope.meals = JSON.parse(msg);
+            $scope.$apply();
+        })
+    }
+
+    // Add normative to the list
+    $scope.addNormative = function() {
+        if(angular.isUndefined($scope.ingredient)) return;
+
+        $scope.normative[$scope.ingredient.name] = JSON.parse("{}");
+        $scope.normative[$scope.ingredient.name]["id"] = $scope.ingredient.id;
+        $scope.normative[$scope.ingredient.name]["amount"] = parseInt($scope.ingredientAmount);
+        $scope.normative[$scope.ingredient.name]["unit"] = $scope.ingredientUnit;
+    }
+
+    // Delete provided normative
+    $scope.removeNormative = function(index) {
+        var newArray = JSON.parse("{}");
+        for(key in $scope.normative) {
+            if(key == ""+index) {
+                continue;
+            }
+            newArray[key] = $scope.normative[key];
+        }
+        $scope.normative = newArray;
+    }
+
+
+    // Save new meal into database
+    $scope.saveMeal = function() {
+        $scope.newMealError = "";
+        $scope.newNormativeError = "";
+        if(angular.isUndefined($scope.selectMealRestaurant)){
+            $scope.newMealError = "You must select restaurant !";
+            return;
+        }
+
+        // validate input [validation as AngularJS object] -> different than array
+        if(angular.isUndefined($scope.newMeal) ||
+            angular.isUndefined($scope.newMeal.name) ||
+            angular.isUndefined($scope.newMeal.price)) {
+            $scope.newMealError = "Please insert all data."
+        }
+
+        // validate seating places [validation as Javascript array]
+        var noElems = true;
+        for(key in $scope.normative) {
+            noElems = false;
+            break;
+        }
+        if(noElems) {
+            $scope.newNormativeError = "Please define normative for Your meal."
+        }
+
+        // Check validation
+        if(noElems || $scope.newMealError != "") {
+            return;
+        }
+
+        // Group data
+        var data = $scope.newMeal;
+        if(angular.isUndefined($scope.newMeal.available)) {
+            data["available"] = 0;
+        }
+        data["normative"] = $scope.normative;
+
+        // Send data to php script
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype : 6,
+                obj : JSON.stringify(data),
+                restaurantId : $scope.selectMealRestaurant.id
+            }
+        }).success(function(msg){
+            // Receive sent restaurant with added id field
+            // and push it to the existing array
+            $scope.meals.push(JSON.parse(msg));
+            $scope.$apply();
+            $scope.toggleShow(5);
+        })
+    };
+
+    // Bind existing meal's data to form
+    $scope.editMeal = function(elem) {
+        console.log(elem.meal);
+        $scope.newMeal = elem.meal;
+        $scope.normative = elem.meal.normative;
+        $scope.toggleShow(6);
+    };
+
+
+    // Save edited meal into database
+    $scope.saveEditedMeal = function() {
+        $scope.newMealError = "";
+        $scope.newNormativeError = "";
+        if(angular.isUndefined($scope.selectMealRestaurant)){
+            $scope.newMealError = "You must select restaurant !";
+            return;
+        }
+
+        // validate input [validation as AngularJS object] -> different than array
+        if(angular.isUndefined($scope.newMeal) ||
+            angular.isUndefined($scope.newMeal.name) ||
+            angular.isUndefined($scope.newMeal.price)) {
+            $scope.newMealError = "Please insert all data."
+        }
+
+        // validate seating places [validation as Javascript array]
+        var noElems = true;
+        for(key in $scope.normative) {
+            noElems = false;
+            break;
+        }
+        if(noElems) {
+            $scope.newNormativeError = "Please define normative for Your meal."
+        }
+
+        // Check validation
+        if(noElems || $scope.newMealError != "") {
+            return;
+        }
+
+        // Group data
+        var data = $scope.newMeal;
+        if(angular.isUndefined($scope.newMeal.available)) {
+            data["available"] = 0;
+        }
+        data["normative"] = $scope.normative;
+
+        // Send data to php script
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype : 7,
+                obj : JSON.stringify(data),
+                restaurantId : $scope.selectMealRestaurant.id
+            }
+        }).success(function(msg){
+            // Receive sent restaurant with added id field
+            // and push it to the existing array
+            $scope.meals = JSON.parse(msg);
+            $scope.$apply();
+            $scope.toggleShow(5);
+        })
+    };
+
+    // Help function for description of the mail = ingredients list
+    $scope.getMealDescription = function(normative) {
+        var output = "";
+        for(key in normative) {
+            if(output != "") output+=", ";
+
+            output+= key + " " + normative[key]["amount"] + " " + normative[key]["unit"];
+        }
+
+        return output;
+    }
+
+    // Nicer display of preview
+    $scope.availability = function(available){
+        switch(parseInt(available)){
+            case 0 : return "Not available.";
+            case 1 : return "Available";
+        }
+    }
+
 
 
 

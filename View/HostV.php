@@ -22,7 +22,13 @@ class HostV {
                     Meals
                 </div>
                 <div class="menuItem" ng-click="toggleFunc(3)">
+                    Stock
+                </div>
+                <div class="menuItem" ng-click="toggleFunc(4)">
                     Reservations
+                </div>
+                <div class="menuItem" ng-click="toggleFunc(5)">
+                    Orders
                 </div>
             </div>
 
@@ -31,7 +37,7 @@ class HostV {
                 <div class="functionalityWindow func1">
 
                     <!-- Add new restaurant button, red -->
-                    <button class="newBtn" ng-click="toggleShow(1)">Add new restaurant</button>
+                    <button class="newBtn newResBtn" ng-click="toggleShow(1)">Add new restaurant</button>
 
                     <!-- Form for entering information about new restaurant -->
                     <div class="newRestaurantHolder">
@@ -88,8 +94,8 @@ class HostV {
                         <br>
 
                         <!-- Confirmation buttons -->
-                        <button class="saveBtn" ng-click="saveNewRestaurant()">Save</button>
-                        <button class="saveEditBtn" ng-click="saveEditedRestaurant()">Update</button>
+                        <button class="saveBtn saveResBtn" ng-click="saveNewRestaurant()">Save</button>
+                        <button class="saveEditBtn saveResEditBtn" ng-click="saveEditedRestaurant()">Update</button>
                         <button class="cancelBtn" ng-click="toggleShow(2)">Cancel</button>
                     </div>
 
@@ -105,7 +111,7 @@ class HostV {
                                     {{ restaurant.description.substr(0,50) + "..." }}
                                 </p>
                             </div><br>
-                            <button class="editBtn" ng-click="editRestaurant(this)">Edit</button>
+                            <button class="editBtn editResBtn" ng-click="editRestaurant(this)">Edit</button>
                             <button class="cancelBtn" ng-click="deleteRestaurant(this)">Delete</button>
                         </div>
                     </div>
@@ -114,12 +120,112 @@ class HostV {
 
                 <!-- Adding, updating and deleting meals -->
                 <div class="functionalityWindow func2">
-                    Meals
+
+                    <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectMealRestaurant" ng-change="getMeals(); getMealCategories()">
+                        <option value="" disabled>-- Choose your restaurant --</option>
+                    </select>
+                    <br>
+
+                    <!-- Add new restaurant button, red -->
+                    <button class="newBtn newMealBtn" ng-click="toggleShow(4)">Add new meal</button>
+
+                    <!-- Form for entering information about new restaurant -->
+                    <div class="newMealHolder">
+
+                        <!-- Part 1 : info about restaurant -->
+                        <div class="newMealPart">
+                            <h4>Add new meal</h4>
+                            <p>{{newMealError}}</p><br>
+                            <label>Name</label>
+                            <input type="text" ng-model="newMeal.name" /><br>
+
+
+                            <label>Price</label>
+                            <input type="number" ng-model="newMeal.price" /> kn<br>
+
+                            <label>Category</label>
+                            <select ng-options="category.name for category in categories" ng-model="newMeal.category" ng-change="getMeals(); getMealCategories()">
+                                <option value="" >No category</option>
+                            </select><br>
+
+                            <label>Available</label>
+                            <input type="checkbox" ng-model="newMeal.available"
+                                   ng-true-value="1" ng-false-value="0"/><br>
+                        </div>
+
+                        <!-- Part 2 : capacity information -->
+                        <div class="newMealPart">
+                            <h4>Ingredients</h4>
+                            <p>{{newNormativeError}}</p><br>
+                            <label>Ingredient</label>
+                            <select ng-options="ingredient.name for ingredient in ingredients" ng-model="ingredient">
+                                <option value="" disabled>-- Select ingredient --</option>
+                            </select><br>
+
+                            <label>Normative</label>
+                            <input type="number" min=1 ng-model="ingredientAmount"/>
+                            <select ng-model="ingredientUnit">
+                                <option value="g">g</option>
+                                <option value="kg">kg</option>
+                                <option value="l">l</option>
+                                <option value="dcl">dcl</option>
+                                <option value="kom">kom</option>
+                            </select>
+
+                            <br>
+                            <button ng-click="addNormative()" class="addBtn">Add normative</button>
+                            <br><br>
+
+                            <!-- Table icons -->
+                            <table class="normativeTable">
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                                <tr ng-repeat="(index,value) in normative">
+                                    <td>{{index}}</td>
+                                    <td>{{value.amount}} {{value.unit}}</td>
+                                    <td><img src="resources/images/delete.png" ng-click="removeNormative(index)"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+                        <!-- Confirmation buttons -->
+                        <button class="saveBtn saveMealBtn" ng-click="saveMeal()">Save</button>
+                        <button class="saveEditBtn saveMealEditBtn" ng-click="saveEditedMeal()">Update</button>
+                        <button class="cancelBtn" ng-click="toggleShow(5)">Cancel</button>
+                    </div>
+
+                    <!-- List of existing restaurants -->
+                    <div class="mealsHolder">
+                        <input type="text" ng-model="mealFilter" placeholder="Quick search"/>
+                        <br>
+
+                        <div ng-repeat="meal in meals | filter:mealFilter" class="meal">
+                            <h3>{{ meal.name }}</h3>
+                            <p>Price: {{ meal.price }} kn</p>
+                            <p>Norm: {{ getMealDescription(meal.normative) }}</p>
+                            <p>{{ availability(meal.available)}}</p><br>
+                            <button class="editBtn editMealBtn" ng-click="editMeal(this)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock preview functionality -->
+                <div class="functionalityWindow func3">
+                    Stock
                 </div>
 
                 <!-- Reservations functionality -->
-                <div class="functionalityWindow func3">
+                <div class="functionalityWindow func4">
                     Reservations
+                </div>
+
+                <!-- Orders functionality -->
+                <div class="functionalityWindow func5">
+                    Orders
                 </div>
             </div>
         </div>

@@ -24,7 +24,13 @@ include_once "View/AdminV.php";
     <div class="separateLine"></div>
 
 <?php
-    $userType = 4;
+    // ovo ce inace citati iz sessiona nakon logina...
+    // sve ovakve hardkodirane stvari su jer nemam jos login...xD
+    // btw: 1 = user (to zanemari, to se treba redirectati na home)
+    //      2 = host
+    //      3 = supplier
+    //      4 = admin
+    $userType = 2;
 
     switch($userType) {
         case 2:

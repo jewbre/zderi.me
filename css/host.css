@@ -1,7 +1,7 @@
-.newRestaurantHolder {
+.newRestaurantHolder, .newMealHolder {
     display:none;
 }
-.newRestaurantPart {
+.newRestaurantPart, .newMealPart {
     display:inline-block;
     vertical-align: top;
     border-right: 1px solid #b2afac ;
@@ -9,7 +9,7 @@
     max-width: 310px;
 }
 
-.func1 label {
+label {
     display:inline-block;
     width: 130px;
     text-align: left;
@@ -17,7 +17,7 @@
     margin-bottom: 10px;
 }
 
-.func1 input, .func1 textarea {
+input[type="text"], .func1 textarea {
     padding: 2px 10px;
     display:inline-block;
     vertical-align: middle;
@@ -36,9 +36,23 @@
 }
 
 
-.func1 input[type="number"] {
+input[type="number"] {
     width:50px;
     padding:2px 5px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+select {
+    padding:2px 5px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    outline: none;
+    border: 2px inset;
+    margin-bottom: 10px;
 }
 
 .tables {
@@ -189,4 +203,37 @@ button {
 
 .editBtn {
     display:inline-block;
+}
+
+
+.mealsHolder {
+    margin-top:10px;
+    border-top:2px solid black;
+    padding-top:10px;
+}
+
+.meal {
+    display:inline-block;
+    vertical-align: middle;
+    padding:20px;
+    background-color: #acb2ba;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.5);
+    margin: 0px 10px 10px 0px;
+    max-width: 300px;
+    opacity:0.7;
+    transition: all 0.15s ease-in-out;
+}
+
+.meal:hover {
+    opacity:1;
+}
+
+.meal h3 {
+    margin:0 auto;
+}
+
+.meal p {
+    margin:0 auto;
+    word-break: break-all;
+    font-size: 14px;
 }

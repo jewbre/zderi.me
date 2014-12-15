@@ -51,7 +51,10 @@ input[type="text"] {
 
 .ingredient {
     display:inline-block;
-    padding:5px 10px;
+    padding:2px 10px;
+    background-color: #acb2ba;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.6);
+    margin-right:5px;
 }
 .ingredient p{
     display:inline-block;

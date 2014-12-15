@@ -26,4 +26,19 @@ switch(intval($_POST["calltype"])) {
         $host->deleteRestaurant();
         $host->getRestaurants();
         break;
+
+
+    case 5:
+        $host = new Host();
+        $host->getMeals();
+        break;
+    case 6:
+        $host = new Host();
+        $host->saveNewMeal();
+        break;
+    case 7:
+        $host = new Host();
+        $host->updateMeal();
+        $host->getMeals();
+        break;
 }
