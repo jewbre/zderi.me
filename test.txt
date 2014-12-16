@@ -18,3 +18,4 @@ bezvezna poruka red 17
 bezvezna poruka red 18
 kak ti se dalo redove pisat bogte
 copy-paste madafaka ^^
+test
