@@ -30,7 +30,7 @@ include_once "View/AdminV.php";
     //      2 = host
     //      3 = supplier
     //      4 = admin
-    $userType = 2;
+    $userType =2;
 
     switch($userType) {
         case 2:

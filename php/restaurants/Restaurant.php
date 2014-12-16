@@ -61,7 +61,8 @@ class Restaurant {
                 $set = array();
                 $set["id"] = $meal->id;
                 $set["name"] = $meal->name;
-                $set["price"] = ($meal->price)." kn";
+                $set["price"] = intval($meal->price);
+                $set["amount"] = 1;
                 $set["description"] = ($meal->ingredient)."(".($meal->amount)." ".($meal->unit).")";
 
             } else {

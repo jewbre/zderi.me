@@ -42,7 +42,7 @@ class RestaurantsV {
                     <div ng-repeat="meal in restaurantMenu | orderBy:'name'" class="meal">
                         <div class="mealName">{{ meal.name }}</div>
                         <div class="mealDescription">{{ meal.description }}</div>
-                        <div class="mealPrice">{{ meal.price }}</div>
+                        <div class="mealPrice">{{ meal.price }} kn</div>
                     </div>
                 </div>
             </div>

@@ -33,4 +33,19 @@ switch(intval($_POST["calltype"])) {
         $admin->getIngredients();
         break;
 
+    case 6 :
+        $admin = new Admin();
+        $admin->getCategories();
+        break;
+    case 7 :
+        $admin = new Admin();
+        $admin->addCategory();
+        $admin->getCategories();
+        break;
+    case 8 :
+        $admin = new Admin();
+        $admin->deleteCategory();
+        $admin->getCategories();
+        break;
+
 }

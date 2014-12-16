@@ -134,7 +134,7 @@ class Host {
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("
             SELECT meal.id as id, meal.name as name, meal.price as price,
-                  category.id as category, meal.available as available,
+                  category.id as category, category.name as categoryName, meal.available as available,
                   ingredient.id as ingredientId, ingredient.name as ingredientName,
                   mealConsistsOf.units as unit, mealConsistsOf.amount as amount
             FROM meal
@@ -163,7 +163,8 @@ class Host {
                 $set["id"] = intval($meal->id);
                 $set["name"] = $meal->name;
                 $set["price"] = intval($meal->price);
-                $set["category"] = intval($meal->category);
+                $set["category"] = $meal->category;
+                $set["categoryName"] = $meal->categoryName;
                 $set["available"] = $meal->available;
                 $set["normative"][$meal->ingredientName]["id"] = $meal->ingredientId;
                 $set["normative"][$meal->ingredientName]["amount"] = $meal->amount;
@@ -186,21 +187,29 @@ class Host {
         $meal = json_decode($_POST["obj"]);
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
 
-        $meal->category = (isset($meal->category)? $meal->category->id : "");
+        $meal->category = (isset($meal->category) ? $meal->category : 0);
         $sql = $db->prepare("INSERT INTO meal(name,price,categoryId,restaurantId,available)
                               VALUES(?,?,?,?,?)");
         $sql->bindParam(1, $meal->name);
         $sql->bindParam(2, $meal->price);
-        $sql->bindParam(3, $meal->category);
+        $sql->bindParam(3, intval($meal->category));
         $sql->bindParam(4, intval($_POST['restaurantId']));
         $sql->bindParam(5, $meal->available);
         $sql->execute();
 
-        $sql = $db->prepare("SELECT * FROM meal WHERE name = ? ORDER BY id DESC");
+        $sql = $db->prepare("SELECT meal.id as id, category.name as categoryName
+                            FROM meal
+                            INNER JOIN category
+                            ON meal.categoryId = category.id
+                            WHERE meal.name = ? ORDER BY meal.id DESC");
         $sql->bindParam(1, $meal->name);
         $sql->setFetchMode(PDO::FETCH_OBJ);
         $sql->execute();
-        $meal->id = $sql->fetch()->id;
+
+        foreach($sql as $row) {
+            $meal->id = $row->id;
+            $meal->categoryName = $row->categoryName;
+        }
 
         foreach($meal->normative as $norm) {
             $sql = $db->prepare("INSERT INTO mealConsistsOf
@@ -212,6 +221,8 @@ class Host {
             $sql->execute();
         }
 
+        $meal->price = intval($meal->price);
+        $meal->category = intval($meal->category);
         echo json_encode($meal);
     }
 
@@ -219,6 +230,8 @@ class Host {
     public function updateMeal(){
         $meal = json_decode($_POST["obj"]);
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $meal->category = (isset($meal->category) ? $meal->category : 0);
 
         $sql = $db->prepare("UPDATE meal
                             SET price = ?, categoryId = ?, available = ?

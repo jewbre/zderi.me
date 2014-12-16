@@ -121,7 +121,7 @@ class HostV {
                 <!-- Adding, updating and deleting meals -->
                 <div class="functionalityWindow func2">
 
-                    <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectMealRestaurant" ng-change="getMeals(); getMealCategories()">
+                    <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectMealRestaurant" ng-change="getMeals()">
                         <option value="" disabled>-- Choose your restaurant --</option>
                     </select>
                     <br>
@@ -144,8 +144,7 @@ class HostV {
                             <input type="number" ng-model="newMeal.price" /> kn<br>
 
                             <label>Category</label>
-                            <select ng-options="category.name for category in categories" ng-model="newMeal.category" ng-change="getMeals(); getMealCategories()">
-                                <option value="" >No category</option>
+                            <select ng-options="category.id as category.name for category in categories" ng-model="newMeal.category" ng-change="check()">
                             </select><br>
 
                             <label>Available</label>
@@ -205,6 +204,7 @@ class HostV {
 
                         <div ng-repeat="meal in meals | filter:mealFilter" class="meal">
                             <h3>{{ meal.name }}</h3>
+                            <p>Category: {{ meal.categoryName }}</p>
                             <p>Price: {{ meal.price }} kn</p>
                             <p>Norm: {{ getMealDescription(meal.normative) }}</p>
                             <p>{{ availability(meal.available)}}</p><br>

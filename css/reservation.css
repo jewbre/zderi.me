@@ -1,0 +1,121 @@
+
+
+.mainHolder {
+    width:860px;
+    background-color: rgba(255,255,255,0.7);
+    display:inline-block;
+    padding:20px;
+}
+
+.meal{
+    padding:10px 0px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #b4b9b6;
+}
+
+
+
+.mealName {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+}
+.mealDefinition {
+    display: inline-block;
+    vertical-align: top;
+    width:600px;
+}
+.mealPrice{
+    text-align: right;
+    display: inline-block;
+    width:230px;
+    vertical-align: top;
+}
+
+.mealDescription {
+    font-size: 12px;
+    text-align: left;
+    width:480px;
+}
+
+.mealPrice span {
+    font-size: 16px;
+}
+
+
+.addBtn {
+    background-color: #ff8520;
+    border: 3px solid #ff8520;
+    padding:5px 10px;
+    font-size:14px;
+    font-weight: bold;
+    color: #ffffff;
+    transition: all 0.15s ease-in-out;
+}
+
+.addBtn:hover {
+    background-color: #ffa243;
+}
+
+input[type="number"] {
+    padding:4px 8px;
+    border:1px solid #9f9f9f;
+    width:30px;
+}
+
+
+.cart {
+    position:fixed;
+    display:inline-block;
+    top:0px;
+    right:0px;
+    border:4px solid #9f5f18;
+    background-color: #dd8720;
+    width:200px;
+    min-height:200px;
+}
+.orderDetails{
+    background:#ffffff;
+}
+
+.orderDetails div {
+    margin:0 auto;
+    padding:4px 10px;
+    text-align: left;
+    border-bottom:2px dashed #b2b2b2;
+}
+
+.orderDetails h4, .orderDetails img {
+    display:inline-block;
+    vertical-align: middle;
+    margin:0 auto;
+    margin-right:10px;
+    color: #72716a;
+    text-shadow:none;
+    font-weight: bold;
+}
+
+.orderDetails img {
+    height:15px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.1s ease-in-out;
+}
+
+.orderDetails img:hover {
+    opacity: 1;
+}
+
+.orderDetails p {
+    text-align: right;
+    margin: 0 auto;
+    color: #a7a69f;
+    text-shadow: 1px 1px 2px #ff7700;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right!important;
+}

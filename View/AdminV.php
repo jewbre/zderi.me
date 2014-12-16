@@ -21,6 +21,9 @@ class AdminV {
                 <div class="menuItem" ng-click="toggleFunc(2)">
             Ingredients
                 </div>
+                <div class="menuItem" ng-click="toggleFunc(3)">
+            Category
+                </div>
             </div>
 
             <div class="mainContent">
@@ -85,6 +88,21 @@ class AdminV {
                         <div ng-repeat="ingredient in ingredients | filter: ingredientFilter" class="ingredient">
                             <p>{{ ingredient.name}}</p>
                             <img src="resources/images/delete.png" ng-click="deleteIngredient(this)"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adding, updating and deleting meals -->
+                <div class="functionalityWindow func3">
+                    <label>Category name</label>
+                    <input type="text" ng-model="newCategory"/><br>
+                    <button class="saveBtn" ng-click="addNewCategory()">Add</button>
+
+                    <div class="categoryList">
+                        <input type="text" ng-model="categoryFilter" placeholder="Quick search" /><br>
+                        <div ng-repeat="category in categories | filter: categoryFilter" class="category">
+                            <p>{{ category.name}}</p>
+                            <img src="resources/images/delete.png" ng-click="deleteCategory(this)"/>
                         </div>
                     </div>
                 </div>
