@@ -21,7 +21,7 @@ input[type="text"] {
     display:none;
 }
 
-.usersHolder, .ingredientsList {
+.usersHolder, .ingredientsList, .categoryList {
     margin-top:10px;
     border-top:2px solid black;
     padding-top: 10px;
@@ -49,19 +49,19 @@ input[type="text"] {
     margin:0 auto;
 }
 
-.ingredient {
+.ingredient, .category {
     display:inline-block;
     padding:2px 10px;
     background-color: #acb2ba;
     box-shadow: 3px 3px 5px rgba(0,0,0,0.6);
     margin-right:5px;
 }
-.ingredient p{
+.ingredient p, .category p{
     display:inline-block;
     vertical-align: middle;
     margin-right: 10px;
 }
-.ingredient img {
+.ingredient img, .category img {
     display:inline-block;
     vertical-align: middle;
     height:15px;

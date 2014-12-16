@@ -138,6 +138,53 @@ app.controller("adminCtrl",function($scope){
 
 
 
+    // CATEGORIES
+
+    // Prepare the data
+    $.ajax({
+        url : "php/admin/",
+        type : "POST",
+        data : {
+            calltype : 6
+        }
+    }).success(function(msg){
+        $scope.categories = JSON.parse(msg);
+        $scope.$apply();
+    })
+
+    $scope.addNewCategory = function() {
+        if(angular.isUndefined($scope.newCategory)) return;
+        $.ajax({
+            url : "php/admin/",
+            type : "POST",
+            data : {
+                calltype : 7,
+                name : $scope.newCategory
+            }
+        }).success(function(msg){
+            $scope.categories = JSON.parse(msg);
+            $scope.$apply();
+        })
+    }
+
+    $scope.deleteIngredient = function(elem){
+        if(confirm("Are you sure?")){
+            $.ajax({
+                url : "php/admin/",
+                type : "POST",
+                data : {
+                    calltype : 8,
+                    id : elem.category.id
+                }
+            }).success(function(msg){
+                $scope.categories = JSON.parse(msg);
+                $scope.$apply();
+            })
+        }
+    }
+
+
+
 
 
 

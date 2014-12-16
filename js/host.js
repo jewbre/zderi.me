@@ -266,7 +266,23 @@ app.controller("hostCtrl",function($scope){
     }).success(function(msg){
         $scope.ingredients = JSON.parse(msg);
         $scope.$apply();
-    })
+    });
+
+    // Get categories
+    $.ajax({
+        url : "php/admin/",
+        type : "POST",
+        data : {
+            calltype : 6
+        }
+    }).success(function(msg){
+        $scope.categories = JSON.parse(msg);
+        $scope.$apply();
+    });
+
+    $scope.check = function() {
+        console.log($scope.newMeal.category);
+    }
 
     // Get meals for restaurant
     $scope.getMeals = function() {
@@ -281,7 +297,8 @@ app.controller("hostCtrl",function($scope){
             $scope.meals = JSON.parse(msg);
             $scope.$apply();
         })
-    }
+    };
+
 
     // Add normative to the list
     $scope.addNormative = function() {

@@ -109,4 +109,39 @@ class Admin {
         $sql->bindParam(1, $_POST["id"]);
         $sql->execute();
     }
+
+    public function getCategories(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("SELECT * FROM category");
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->execute();
+
+        $data = array();
+        foreach($sql as $category) {
+            $set = array();
+            $set["id"] = $category->id;
+            $set["name"] = $category->name;
+
+            $data[] = $set;
+        }
+
+        echo json_encode($data);
+    }
+
+    public function addCategory(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("INSERT INTO category(name) VALUES(?)");
+        $sql->bindParam(1, $_POST["name"]);
+        $sql->execute();
+    }
+
+    public function deleteCategory(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("DELETE FROM category WHERE id = ?");
+        $sql->bindParam(1, $_POST["id"]);
+        $sql->execute();
+    }
 } 

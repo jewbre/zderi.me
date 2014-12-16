@@ -17,35 +17,44 @@
         include_once "resources/functions.php";
         include_once "View/RegistrationV.php";
         include_once "View/RestaurantsV.php";
+        include_once "View/ReservationV.php";
 
         $header = new Header();
         $header->displayHeader();
         if(isset($_GET['page'])) {
-            echo isSessionActive();
+            $page = $_GET['page'];
             if(isSessionActive()) {
-                $page = $_GET['page'];
-
-                if ($page == "registration") {
-                    $registration = new RegistrationV();
-                    $registration->displayView();
-                } else if ($page == "login") {
-                    $login = new Login();
-                    $login->displayView();
-                } else {
-                    $view = new RestaurantsV();
-                    $view->displayList();
+                switch($page) {
+                    case "registration" :
+                        $registration = new RegistrationV();
+                        $registration->displayView();
+                        break;
+                    case "reservation" :
+                        $reservation = new ReservationV();
+                        $reservation->displayView();
+                        break;
+                    default :
+                        $login = new Login();
+                        $login->displayView();
                 }
             } else {
-                if($_GET['page']=="registration") {
-                    $registration = new RegistrationV();
-                    $registration->displayView();
-                } else {
-                    $login = new Login();
-                    $login->displayView();
-
+                switch($page) {
+                    case "registration" :
+                        $registration = new RegistrationV();
+                        $registration->displayView();
+                        break;
+                    case "reservation" :
+                        $reservation = new ReservationV();
+                        $reservation->displayView();
+                        break;
+                    case "login" :
+                        $login = new Login();
+                        $login->displayView();
+                        break;
+                    default :
+                        $view = new RestaurantsV();
+                        $view->displayList();
                 }
-                // ..index.php?page=login&redirect=SITEkOJIjEhTIO
-                // header("Location: ../index.php?page=login&errorNmbr=1&redirect=
             }
         } else {
             $view = new RestaurantsV();
