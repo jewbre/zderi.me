@@ -20,14 +20,16 @@ class RestaurantsV {
             </div>
 
             <div ng-repeat="(index,restaurant) in restaurants | filter:search | limitTo:10 | orderBy:'name'" class="restaurantPreview">
+                <div class="restaurantImageHolder">
                 <img ng-src="{{restaurant.img}}" class="restaurantImagePreview" />
+                </div>
                 <div class="restaurantDetails">
-                    <h2 class="restaurantName">{{ restaurant.name }}</h2>
-                    <p class="restaurantDescription">
-                        {{ restaurant.address + ", " + restaurant.city}} <br>
-                        {{ restaurant.contact }} <br>
-                        {{ restaurant.description.substr(0,50) + "..." }}
-                    </p>
+                <h2 class="restaurantName">{{ restaurant.name }}</h2>
+                <p class="restaurantDescription">
+                    {{ restaurant.address + ", " + restaurant.city}} <br>
+                    {{ restaurant.contact }} <br>
+                    {{ restaurant.description.substr(0,50) + "..." }}
+                </p>
                 </div>
                 <button class="mealMenuBtn" ng-click="showMenu(this)">Check restaurant menu</button>
             </div>
@@ -38,7 +40,12 @@ class RestaurantsV {
 
 
             <div class="mealMenuHolder" ng-click="hideMenu()">
+
                 <div class="mealMenu">
+                    <a ng-href="index.php?page=reservation&id={{currentRest.id}}">
+                        <button class="reserveBtn"> Reserve here ! </button>
+                    </a>
+                    <br>
                     <div ng-repeat="meal in restaurantMenu | orderBy:'name'" class="meal">
                         <div class="mealName">{{ meal.name }}</div>
                         <div class="mealDescription">{{ meal.description }}</div>

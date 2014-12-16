@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html>
 <head>
     <link rel="stylesheet" type="text/css" href="css/design.css">
 
@@ -42,6 +42,8 @@
                         $registration = new RegistrationV();
                         $registration->displayView();
                         break;
+
+                    // ne moze
                     case "reservation" :
                         $reservation = new ReservationV();
                         $reservation->displayView();

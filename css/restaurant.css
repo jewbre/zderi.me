@@ -11,6 +11,11 @@
 .restaurantImagePreview:hover {
     border: 3px solid rgba(146,146,146,1);
 }
+.restaurantImageHolder {
+    display:inline-block;
+    vertical-align: top;
+    width:210px;
+}
 
 .restaurantPreview {
     width:880px;
@@ -106,4 +111,20 @@
 
 .mealDescription {
     width:480px;
+}
+
+
+.reserveBtn {
+    padding:10px 15px;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #c05800;
+    border:3px solid #c05800;
+    transition:all 0.15s ease-in-out;
+    margin:5px 0px;
+    cursor: pointer;
+}
+
+.reserveBtn:hover {
+    background-color: #ff7300;
 }

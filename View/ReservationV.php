@@ -13,6 +13,25 @@ class ReservationV {
         <script src="js/reservation.js"></script>
         <link href="css/reservation.css" rel="stylesheet" type="text/css" />
         <div ng-app="reservationApp" ng-controller="reservationCtrl" class="mainHolder">
+            <div class="datetimeHolder">
+                <div class="datetimePart">
+                    <h2>Select time and date</h2>
+
+                    <label>Date</label>
+                    <input type="date" ng-model="date" min="2014-12-16" ng-change="getFreeSeats()" /><br>
+
+                    <label>Time</label>
+                    <input type="number" ng-model="time" min="8" max="20"  ng-change="getFreeSeats()"/> <label>h</label>
+                </div>
+
+                <div class="datetimePart">
+                    <h2>Select seating places</h2>
+                    <div ng-repeat="seat in freeSeats" class="freeTables">
+                        <span>Table for {{ seat.index }}, still {{ seat.free }} free. Take </span>
+                        <input type="number" min="0" ng-max="{{seat.free}}" value="0" ng-model="seat.occupy" ng-change="occupySeat(this)"/>
+                    </div>
+                </div>
+            </div>
 
             <input type="text" ng-model="mealsFilter" placeholder="Quick search" />
             <div ng-repeat="meal in meals | filter:mealsFilter | orderBy:'name'" class="meal">
@@ -32,6 +51,15 @@ class ReservationV {
 
 
             <div class="cart">
+                <div class="reservationDetails">
+                    <div class="date">
+                        {{ date }} at {{ time }}:00h
+                    </div>
+                    <b>Tables:</b><br>
+                    <div ng-repeat="(index,occupy) in occupied" class="reservationsTables">
+                        Table for {{index}} x {{ occupy }}
+                    </div>
+                </div>
                 <div class="orderDetails">
                     <div ng-repeat="menuItem in menu">
                         <h4>{{menuItem.name}}</h4>
@@ -43,6 +71,9 @@ class ReservationV {
                     <div class="total">
                        TOTAL : {{ totalPrice() }} kn
                     </div>
+                </div>
+                <div class="confirmation">
+                    <button class="reserveBtn">Confirm reservation</button>
                 </div>
             </div>
 

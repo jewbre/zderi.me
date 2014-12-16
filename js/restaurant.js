@@ -19,6 +19,7 @@ restaurants.controller("restaurantsCtrl", function($scope){
 
     //  Show overflow menu
     $scope.showMenu = function(elem) {
+        $scope.currentRest = elem.restaurant;
         $.ajax({
             url : "php/restaurants/",
             type : "POST",

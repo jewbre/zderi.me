@@ -20,8 +20,7 @@ app.controller("reservationCtrl",function($scope){
         window.location.href = "index.php";
     }
 
-
-
+    // Get meals
     $.ajax({
         url : "php/restaurants/",
         type : "POST",
@@ -32,9 +31,45 @@ app.controller("reservationCtrl",function($scope){
     }).success(function(msg){
         $scope.meals = JSON.parse(msg);
         $scope.$apply();
-    })
+    });
 
 
+
+
+
+
+
+    // Prepare todays date for bindind
+    $scope.time = 8;
+    var today = new Date();
+    $scope.date = today.getFullYear() + "-"+ (today.getMonth()+1).toString() + "-" + today.getDate();
+
+
+    // Aquire free seats for provided timestamp
+    $scope.getFreeSeats = function(){
+        $scope.occupied = JSON.parse("{}");
+        $.ajax({
+            url: "php/reservation/",
+            type: "POST",
+            data: {
+                calltype: 1,
+                restaurantId: getUrlVars()["id"],
+                timestamp: $scope.date + " " + $scope.time
+            }
+        }).success(function (msg) {
+            // User could theoretically choose a time in the past.
+            if(msg == "invalid") {
+                alert("You can't make reservation in the past !");
+            } else {
+                $scope.freeSeats = JSON.parse(msg);
+                $scope.$apply();
+            }
+        })
+    };
+
+
+
+    // Menu for the order
     $scope.menu = JSON.parse("{}");
     $scope.addToOrder = function(elem){
         $scope.menu[elem.meal.name] = elem.meal;
@@ -53,12 +88,39 @@ app.controller("reservationCtrl",function($scope){
         $scope.menu = newArray;
     }
 
+    // Calculate total sum of every item in menu
     $scope.totalPrice = function(){
         var sum = 0;
         for(key in $scope.menu) {
             sum+=parseInt($scope.menu[key].price)*parseInt($scope.menu[key].amount);
         }
         return sum;
+    }
+
+
+    // Chosen tables for reservation
+    $scope.occupied = JSON.parse("{}");
+
+    // Occupy a seat
+    $scope.occupySeat = function(elem) {
+        // If 0, set it freeeeeee
+        if(elem.seat.occupy == 0) {
+            var newArray = JSON.parse("{}");
+            for(key in $scope.occupied){
+                if(key == elem.seat.index){
+                    continue;
+                }
+                newArray[key] = $scope.occupied[key];
+            }
+            $scope.occupied = newArray;
+        } else {
+            $scope.occupied[elem.seat.index] = elem.seat.occupy;
+            // We can't reserve more than we have
+            if (elem.seat.free < elem.seat.occupy) {
+                elem.seat.occupy = elem.seat.free;
+                $scope.occupied[elem.seat.index] = elem.seat.free;
+            }
+        }
     }
 
 })
