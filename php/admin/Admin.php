@@ -113,7 +113,7 @@ class Admin {
     public function getCategories(){
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
 
-        $sql = $db->prepare("SELECT * FROM category");
+        $sql = $db->prepare("SELECT * FROM category WHERE id != 0");
         $sql->setFetchMode(PDO::FETCH_OBJ);
         $sql->execute();
 

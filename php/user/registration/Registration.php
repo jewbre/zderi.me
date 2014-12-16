@@ -9,6 +9,8 @@ include_once "../../../resources/constants.php";
 
 
 class Registration {
+
+
     private static function getDB() {
         try{
             $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
@@ -31,6 +33,10 @@ class Registration {
         $sql->bindParam(5, $_POST["lastName"]);
         $sql->bindParam(6, $_POST["userType"]);
         $sql->execute();
+    //TODO dodati sql za povuci ID i ubaciti id i tip ovdje
+        $_SESSION['userId'] ="";
+        $_SESSION['userType']= "";
+
     }
 
     public function checkUsernameAndEmail(){
