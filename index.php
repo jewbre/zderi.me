@@ -11,7 +11,6 @@
 <body>
 
     <?php
-        include_once "classes/RestaurantsList.php";
         include_once "classes/Header.php";
         include_once "resources/strings.php";
         include_once "resources/functions.php";
