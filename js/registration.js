@@ -60,6 +60,7 @@ app.controller("registrationCtrl", function($scope) {
                     })
                   } else {
                     $scope.error = "Username or email duplication.";
+                  console.log("Korman je picka");
               }
            });
        }
