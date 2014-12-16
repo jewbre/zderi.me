@@ -36,6 +36,7 @@ app.controller("registrationCtrl", function($scope) {
                    username: $scope.username,
                    email: $scope.email
                }
+
            }).success(function (msg) {
               if(msg=="true") {
                   $.ajax({
