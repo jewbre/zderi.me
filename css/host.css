@@ -126,6 +126,8 @@ button {
     padding:5px 10px;
     font-size: 16px;
     font-weight: bold;
+    display:inline-block;
+    vertical-align: middle;
 }
 
 .saveBtn, .saveEditBtn {
@@ -236,4 +238,64 @@ button {
     margin:0 auto;
     word-break: break-all;
     font-size: 14px;
+}
+
+.reservationTable {
+    border-collapse: collapse;
+}
+
+.reservationTable th {
+    background-color: #747474;
+    color: #ffffff;
+    font-size:18px;
+    font-weight: bold;
+    padding:5px 10px;
+}
+
+.reservationTable td {
+    padding:5px 10px;
+}
+
+.reservationTable th, .reservationTable td {
+    border: 1px solid #aeaeae;
+}
+
+.reservationTable tr:nth-child(odd){
+    background-color: #dedede;
+}
+
+
+.reservationTable tr:nth-child(even){
+    background-color: #c7c7c7;
+}
+
+.reservationTable img {
+    height:15px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    opacity: 0.5;
+}
+.reservationTable img:hover {
+    opacity: 1;
+}
+
+.reservationMealsInput {
+    padding:20px;
+    background-color: rgba(255,255,255,0.6);
+    display:none;
+}
+
+.reservationMealsInput div {
+    display:inline-block;
+    vertical-align: middle;
+    margin:10px;
+    width:250px;
+}
+
+.stockHolder {
+    background-color: rgba(255,255,255,0.5);
+    box-shadow: 4px 4px 4px rgba(0,0,0,0.5);
+    margin-top:20px;
+    padding:20px;
+
 }

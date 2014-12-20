@@ -12,4 +12,8 @@ switch(intval($_POST["calltype"])) {
         $reservation = new Reservation();
         $reservation->getFreeSeats();
         break;
+    case 2:
+        $reservation = new Reservation();
+        $reservation->makeReservation();
+        break;
 }

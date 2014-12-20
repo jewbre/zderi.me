@@ -466,6 +466,151 @@ app.controller("hostCtrl",function($scope){
 
 
 
+    //////////////////////////////////////////////
+    // RESERVATIONS
+    // Following is the logic for implementing
+    // reservations functionality of the SPA
+    //////////////////////////////////////////////
+
+
+    $scope.reservationLimit = 10;
+    $scope.showMoreReservations = function(){
+        $scope.reservationLimit+=10;
+    }
+    $scope.getReservations = function() {
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype : 8,
+                restaurantId : parseInt($scope.selectReservationRestaurant.id)
+            }
+        }).success(function(msg){
+            $scope.reservations = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+
+    $scope.checkMeals = function(elem){
+        var empty = true;
+        for(key in elem.reservation.meals) {
+            empty = false;
+            break;
+        }
+        return empty && elem.reservation.status != "canceled";
+    }
+
+    $scope.openAddMealToReservation = function(elem){
+        $scope.activeReservation = elem;
+        $scope.getMealsForReservation();
+        $(".reservationMealsInput").slideDown("normal");
+    }
+
+    $scope.getMealsForReservation = function(){
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype : 9,
+                restaurantId : parseInt($scope.selectReservationRestaurant.id)
+            }
+        }).success(function(msg){
+            $scope.mealsForReservation = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+
+    $scope.addMealsToReservation = function(){
+        if(confirm("Are you sure this is everything?")){
+            var hasAny = false;
+            for(key in $scope.mealsForReservation){
+                hasAny = true;
+                if($scope.mealsForReservation[key].mealAmount > 0) {
+                    $scope.activeReservation.meals.push($scope.mealsForReservation[key]);
+                }
+            }
+        }
+
+        if(hasAny) {
+            $.ajax({
+                url: "php/host/",
+                type: "POST",
+                data: {
+                    calltype: 10,
+                    reservationId: $scope.activeReservation.id,
+                    meals: JSON.stringify($scope.mealsForReservation)
+                }
+            });
+
+            $(".reservationMealsInput").slideUp("normal");
+        } else {
+            alert("You haven't added a single meal to the reservation !");
+        }
+    }
+
+    $scope.changeReservationStatus = function(status, elem) {
+        switch(status) {
+            case 0: var stat = "canceled"; break;
+            case 1: var stat = "confirmed"; break;
+        }
+
+        $.ajax({
+            url: "php/host/",
+            type: "POST",
+            data: {
+                calltype: 11,
+                reservationId: elem.reservation.id,
+                restaurantId: parseInt($scope.selectReservationRestaurant.id),
+                status: stat
+            }
+        }).success(function(msg){
+            $scope.reservations = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+
+
+
+    //////////////////////////////////////////////
+    // STOCK
+    // Following is the logic for implementing
+    // stock functionality of the SPA
+    //////////////////////////////////////////////
+
+    $scope.stockMessage = "";
+    $scope.getStock = function(){
+        $.ajax({
+            url : "php/host/",
+            type : "POST",
+            data : {
+                calltype : 12,
+                restaurantId : parseInt($scope.selectStockRestaurant.id)
+            }
+        }).success(function(msg){
+            $scope.stock = JSON.parse(msg);
+            $scope.$apply();
+        })
+    }
+
+    $scope.saveStock = function(){
+        $scope.stockMessage = "";
+        if(confirm("Are you sure?")) {
+            $.ajax({
+                url: "php/host/",
+                type: "POST",
+                data: {
+                    calltype: 13,
+                    restaurantId: parseInt($scope.selectStockRestaurant.id),
+                    ingredients: JSON.stringify($scope.stock)
+                }
+            }).success(function (msg) {
+                $scope.stock = JSON.parse(msg);
+                $scope.stockMessage = "Stock changed successfully saved.";
+                $scope.$apply();
+            })
+        }
+    }
+
 
 
 })

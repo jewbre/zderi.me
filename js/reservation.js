@@ -103,6 +103,7 @@ app.controller("reservationCtrl",function($scope){
 
     // Occupy a seat
     $scope.occupySeat = function(elem) {
+        $scope.seatError = "";
         // If 0, set it freeeeeee
         if(elem.seat.occupy == 0) {
             var newArray = JSON.parse("{}");
@@ -120,6 +121,42 @@ app.controller("reservationCtrl",function($scope){
                 elem.seat.occupy = elem.seat.free;
                 $scope.occupied[elem.seat.index] = elem.seat.free;
             }
+        }
+    }
+
+
+
+    $scope.reserve = function() {
+        var notEmpty = false;
+        for(key in $scope.occupied){
+            notEmpty = true;
+            break;
+        }
+
+        if(notEmpty) {
+            $.ajax({
+                url: "php/reservation/",
+                type: "POST",
+                data: {
+                    calltype: 2,
+                    date: $scope.date,
+                    time: $scope.time,
+                    tables : JSON.stringify($scope.occupied),
+                    menu : JSON.stringify($scope.menu),
+                    restaurantId : getUrlVars()["id"]
+                }
+            }).success(function(msg){
+                if(msg == "invalidTime") {
+                    alert("Please choose time in the future.");
+                } else {
+                    $scope.barcode = msg;
+                    $scope.$apply();
+                    $(".barcodeContent").slideDown("normal");
+                    $(".reservationContent").slideUp("normal");
+                }
+            })
+        } else {
+            $scope.seatError = "Please choose at least one table.";
         }
     }
 

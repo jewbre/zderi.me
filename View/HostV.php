@@ -215,12 +215,89 @@ class HostV {
 
                 <!-- Stock preview functionality -->
                 <div class="functionalityWindow func3">
-                    Stock
+
+                    <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectStockRestaurant" ng-change="getStock()">
+                        <option value="" disabled>-- Choose your restaurant --</option>
+                    </select>
+                    <p>{{stockMessage}}</p>
+                    <br>
+
+                    <button class="saveBtn" ng-click="saveStock()">Save changes</button>
+                    <div class="stockHolder">
+                        <h3>Ingredients in stock</h3>
+                        <input type="text" ng-model="stockFilter" placeholder="Quick search"/>
+
+                        <div ng-repeat="ingredient in stock | filter:stockFilter">
+                            <label>{{ ingredient.name }}</label>
+                            <input type="number" min="0" ng-model="ingredient.amount" ng-change="ingredient.changed = 1"/>
+                            <select ng-model="ingredient.unit" ng-change="ingredient.changed = 1">
+                                <option value="g">g</option>
+                                <option value="kg">kg</option>
+                                <option value="l">l</option>
+                                <option value="dcl">dcl</option>
+                                <option value="kom">kom</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Reservations functionality -->
                 <div class="functionalityWindow func4">
-                    Reservations
+
+
+                    <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectReservationRestaurant" ng-change="getReservations()">
+                        <option value="" disabled>-- Choose your restaurant --</option>
+                    </select>
+                    <br>
+
+                    <div class="reservationMealsInput">
+                        <h3>Meals for reservation {{ activeReservation.barcode }}</h3>
+                        <button class="saveBtn" ng-click="addMealsToReservation()">Add meals to reservation</button>
+                        <input type="text" ng-model="reservationMealsFilter" placeholder="Quick search"/>
+                        <br>
+                        <div ng-repeat="meal in mealsForReservation | filter:reservationMealsFilter">
+                            <label>{{ meal.name }} ( {{ meal.price }} kn ) :</label>
+                            <input type="number" ng-model="meal.mealAmount">
+                        </div>
+                    </div>
+
+                    <br>
+                    <input type="text" ng-model="reservationFilter" placeholder="Quick search"/>
+                    <br>
+                    <table class="reservationTable">
+                        <tr>
+                            <th>Barcode</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Meals</th>
+                            <th>Seats</th>
+                        </tr>
+                        <tr ng-repeat="reservation in reservations | filter:reservationFilter | orderBy:'barcode' | limitTo:reservationLimit">
+                            <td>{{ reservation.barcode }}</td>
+                            <td>{{ reservation.timestamp*1000 | date:'yyyy-MM-dd HH:mm' }}</td>
+                            <td>
+                                {{ reservation.status }}
+                                <img src="resources/images/confirm.png" ng-click="changeReservationStatus(1,this)" ng-show="{{ reservation.status == 'pending' && !checkMeals(this)}}" />
+                                <img src="resources/images/delete.png" ng-click="changeReservationStatus(0,this)" ng-show="{{ reservation.status == 'pending' }}" />
+                            </td>
+                            <td>
+                                <button ng-show="checkMeals(this)" class="addBtn" ng-click="openAddMealToReservation(reservation)">Add meals</button>
+                                <div ng-show="!checkMeals(this)" ng-repeat="meal in reservation.meals">
+                                    <label>{{ meal.name }} : {{ meal.price }} kn x {{ meal.mealAmount }} = {{ meal.price * meal.mealAmount }} kn</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tables" ng-repeat="(index,value) in reservation.seats">
+                                    <div class="table">{{index}}</div>
+                                    <div class="seatingNumber">= {{value.seatingAmount}}</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <button class="saveBtn" ng-click="showMoreReservations()">Show more</button>
+
                 </div>
 
                 <!-- Orders functionality -->

@@ -259,4 +259,189 @@ class Host {
         }
 
     }
+
+
+
+    public function getReservations(){
+        $restaurantId = intval($_POST["restaurantId"]);
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("
+            SELECT reservation.id as id, reservation.barcode as barcode,
+              reservation.timestamp as timestamp, reservation.status as status,
+              reservationsseats.seatingNumber as seatingNumber, reservationsseats.amount as seatingAmount,
+              reservationMenu.mealId as mealId, reservationMenu.amount as mealAmount,
+              reservationMenu.price as price, meal.name as name
+            FROM reservation
+            INNER JOIN reservationsSeats
+            ON reservation.id = reservationsSeats.reservationId
+            LEFT JOIN reservationMenu
+            ON reservation.id = reservationMenu.reservationId
+            LEFT JOIN meal
+            ON meal.id = reservationMenu.mealId
+            WHERE reservation.restaurantId = ?
+            ORDER BY timestamp desc, seatingNumber, mealId
+        ");
+        $sql->bindParam(1,$restaurantId);
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->execute();
+
+        $data = array();
+        $set["id"] = -1;
+        $meals = array();
+        $seats = array();
+
+        foreach($sql as $reservation) {
+            if(intval($reservation->id) != intval($set["id"])) {
+                if($set["id"]>0){
+                    $set["meals"] = $meals;
+                    $set["seats"] = $seats;
+                    $data[] = $set;
+                }
+
+                $set = array();
+                $meals = array();
+                $seats = array();
+
+                $set["id"] = intval($reservation->id);
+                $set["barcode"] = $reservation->barcode;
+                $set["timestamp"] = $reservation->timestamp;
+                $set["status"] = $reservation->status;
+
+                $seats[$reservation->seatingNumber]["seatingNumber"] = $reservation->seatingNumber;
+                $seats[$reservation->seatingNumber]["seatingAmount"] = $reservation->seatingAmount;
+
+                if($reservation->mealId != null){
+                    $meals[$reservation->mealId]["mealId"] = $reservation->mealId;
+                    $meals[$reservation->mealId]["mealAmount"] = $reservation->mealAmount;
+                    $meals[$reservation->mealId]["price"] = $reservation->price;
+                    $meals[$reservation->mealId]["name"] = $reservation->name;
+                }
+            } else {
+                $seats[$reservation->seatingNumber]["seatingNumber"] = $reservation->seatingNumber;
+                $seats[$reservation->seatingNumber]["seatingAmount"] = $reservation->seatingAmount;
+
+                if($reservation->mealId != null){
+                    $meals[$reservation->mealId]["mealId"] = $reservation->mealId;
+                    $meals[$reservation->mealId]["mealAmount"] = $reservation->mealAmount;
+                    $meals[$reservation->mealId]["price"] = $reservation->price;
+                    $meals[$reservation->mealId]["name"] = $reservation->name;
+                }
+            }
+
+        }
+
+        $set["meals"] = $meals;
+        $set["seats"] = $seats;
+        $data[] = $set;
+
+        echo json_encode($data);
+
+    }
+
+
+    public function getMealsForReservation(){
+        $restaurantId = intval($_POST["restaurantId"]);
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+
+        $sql = $db->prepare("SELECT * FROM meal WHERE restaurantId = ? AND available = 1");
+        $sql->bindParam(1, $restaurantId);
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->execute();
+
+        $data = array();
+        foreach($sql as $meal){
+            $set = array();
+            $set["id"] = $meal->id;
+            $set["name"] = $meal->name;
+            $set["price"] = $meal->price;
+            $set["mealAmount"] = 0;
+            $data[] = $set;
+        }
+
+        echo json_encode($data);
+
+    }
+
+    public function saveMealsForReservation(){
+        $reservationId = intval($_POST["reservationId"]);
+        $meals = json_decode($_POST["meals"]);
+
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("INSERT INTO reservationMenu VALUES(?,?,?,?)");
+        $sql->bindParam(2, $reservationId);
+        foreach($meals as $meal){
+            if(intval($meal->mealAmount) < 1) continue;
+            $sql->bindParam(1, intval($meal->id));
+            $sql->bindParam(3, intval($meal->mealAmount));
+            $sql->bindParam(4, intval($meal->price));
+            $sql->execute();
+        }
+
+    }
+
+    public function changeReservationStatus(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("UPDATE reservation SET status = ? WHERE id = ?");
+        $sql->bindParam(1, $_POST["status"]);
+        $sql->bindParam(2, intval($_POST["reservationId"]));
+        $sql->execute();
+
+    }
+
+
+    public function getStock() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("
+            SELECT ingredient.id as id,ingredient.name as name, IFNULL(stock.amount,0) as amount, IFNULL(stock.units,'g') as unit
+            FROM ingredient
+            LEFT JOIN (SELECT * FROM stock WHERE restaurantId = ?) as stock
+            ON ingredient.id = stock.ingredientId
+        ");
+        $sql->bindParam(1, intval($_POST["restaurantId"]));
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->execute();
+
+        $data = array();
+
+        foreach($sql as $stock){
+            $set = array();
+            $set["id"] = intval($stock->id);
+            $set["name"] = $stock->name;
+            $set["amount"] = intval($stock->amount);
+            $set["unit"] = $stock->unit;
+            $set["changed"] = 0;
+            $data[] = $set;
+        }
+
+        echo json_encode($data);
+
+    }
+
+    public function updateStock(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $deleteSql = $db->prepare("DELETE FROM stock WHERE ingredientId = ? AND restaurantId = ?");
+        $insertSql = $db->prepare("INSERT INTO stock VALUES(?,?,?,?)");
+
+        $deleteSql->bindParam(2, intval($_POST["restaurantId"]));
+        $insertSql->bindParam(2, intval($_POST["restaurantId"]));
+
+        $ingredients = json_decode($_POST["ingredients"]);
+
+        foreach($ingredients as $ingredient){
+            if($ingredient->changed == 0) continue;
+
+            $deleteSql->bindParam(1, intval($ingredient->id));
+            $deleteSql->execute();
+
+            if(intval($ingredient->amount > 0)) {
+                $insertSql->bindParam(1, intval($ingredient->id));
+                $insertSql->bindParam(3, $ingredient->unit);
+                $insertSql->bindParam(4, intval($ingredient->amount));
+                $insertSql->execute();
+            }
+        }
+    }
 } 

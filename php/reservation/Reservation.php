@@ -16,27 +16,27 @@ class Reservation {
         $time = explode("-",$parts1[0]);
 
         $timestamp = mktime(intval($parts1[1]),0,0,intval($time[1]),intval($time[2]),intval($time[0]));
-        if($timestamp < mktime(date("h"),date("m"),date("s"),date("m"),date("d"),date("Y"))){
+        if($timestamp < time()){
             echo "invalid";
             die();
         }
         $startTimestamp = $timestamp-3*3600;
         $endTimestamp = $timestamp+3*3600;
 
+
+
         $sql = $db->prepare("
             SELECT capacity.seatingNumber as sn, (capacity.amount - IFNULL(reservationsseats.amount,0)) as free FROM restaurant
             INNER JOIN capacity
             ON restaurant.id = capacity.restaurantId
-            LEFT JOIN (SELECT * FROM reservation WHERE timestamp >= ? AND timestamp <= ? AND restaurantId = ?) as reservation
+            LEFT JOIN (SELECT * FROM reservation WHERE timestamp >= ".$startTimestamp." AND timestamp <= ".$endTimestamp." AND restaurantId = ?) as reservation
             ON reservation.restaurantId = restaurant.id
             LEFT JOIN reservationSSeats
             ON reservation.id = reservationsSeats.reservationId AND capacity.seatingNumber = reservationsSeats.seatingNumber
             WHERE restaurant.id = ?
         ");
         $sql->bindParam(1,$_POST["restaurantId"]);
-        $sql->bindParam(2,$startTimestamp);
-        $sql->bindParam(3,$endTimestamp);
-        $sql->bindParam(4,$_POST["restaurantId"]);
+        $sql->bindParam(2,$_POST["restaurantId"]);
         $sql->setFetchMode(PDO::FETCH_OBJ);
         $sql->execute();
 
@@ -52,4 +52,80 @@ class Reservation {
 
         echo json_encode($data);
     }
-} 
+
+
+    public function makeReservation(){
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $userId = 2;
+        $status = "pending";
+
+        $time = explode("-",$_POST["date"]);
+
+        $timestamp = mktime(intval($_POST["time"]),0,0,intval($time[1]),intval($time[2]),intval($time[0]));
+        if($timestamp < mktime(date("h"),date("m"),date("s"),date("m"),date("d"),date("Y"))){
+            echo "invalidTime";
+            die();
+        }
+
+        $tables = json_decode($_POST["tables"]);
+        $restaurantId = $_POST["restaurantId"];
+
+        $sql = $db->prepare("INSERT INTO reservation(restaurantId, userId, timestamp, status) VALUES (?,?,?,?)");
+        $sql->bindParam(1, $restaurantId);
+        $sql->bindParam(2, $userId);
+        $sql->bindParam(3, $timestamp);
+        $sql->bindParam(4, $status);
+        $sql->execute();
+
+        $sql = $db->prepare("SELECT * FROM reservation WHERE restaurantId = ? AND userId = ? ORDER BY id DESC");
+        $sql->bindParam(1, $restaurantId);
+        $sql->bindParam(2, $userId);
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->execute();
+
+        $reservationId = $sql->fetch()->id;
+
+        $sql = $db->prepare("INSERT INTO reservationsSeats VALUES(?,?,?)");
+        $sql->bindParam(1,$reservationId);
+        foreach($tables as $sn => $amount) {
+            $sql->bindParam(2,intval($sn));
+            $sql->bindParam(3,intval($amount));
+            $sql->execute();
+        }
+
+
+        if($_POST["menu"] != "{}") {
+            $menu = json_decode($_POST['menu']);
+            $sql = $db->prepare("INSERT INTO reservationMenu VALUES(?,?,?,?)");
+            $sql->bindParam(2,$reservationId);
+            foreach($menu as $key => $meal) {
+                $sql->bindParam(1,intval($meal->id));
+                $sql->bindParam(3,$meal->amount);
+                $sql->bindParam(4,$meal->price);
+                $sql->execute();
+            }
+        }
+
+
+        $resBarcode = "R".formatTo3($reservationId).(formatTo3($reservationId*$reservationId%997));
+
+        $sql = $db->prepare("UPDATE reservation SET barcode = ? WHERE id = ?");
+        $sql->bindParam(1,$resBarcode);
+        $sql->bindParam(2,$reservationId);
+        $sql->execute();
+
+        echo $resBarcode;
+    }
+
+}
+
+function formatTo3($number){
+    if($number < 10) {
+        return "00".$number;
+    } else if($number < 100) {
+        return "0".$number;
+    } else {
+        return $number;
+    }
+}
