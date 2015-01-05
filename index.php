@@ -17,6 +17,7 @@
         include_once "View/RegistrationV.php";
         include_once "View/RestaurantsV.php";
         include_once "View/ReservationV.php";
+        include_once "View/LoginV.php";
 
         $header = new Header();
         $header->displayHeader();
@@ -33,7 +34,7 @@
                         $reservation->displayView();
                         break;
                     default :
-                        $login = new Login();
+                        $login = new LoginV();
                         $login->displayView();
                 }
             } else {
@@ -49,7 +50,7 @@
                         $reservation->displayView();
                         break;
                     case "login" :
-                        $login = new Login();
+                        $login = new LoginV();
                         $login->displayView();
                         break;
                     default :

@@ -39,6 +39,7 @@ class RegistrationV {
             <button ng-click="validateForm()" class="submitBtn">Register</button>
             <a href="index.php"><button class="cancelBtn">Cancel</button></a>
 
+
         </div>
 
     <?php

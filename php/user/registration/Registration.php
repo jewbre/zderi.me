@@ -33,17 +33,27 @@ class Registration {
         $sql->bindParam(5, $_POST["lastName"]);
         $sql->bindParam(6, $_POST["userType"]);
         $sql->execute();
-    //TODO dodati sql za povuci ID i ubaciti id i tip ovdje
-        $_SESSION['userId'] ="";
-        $_SESSION['userType']= "";
 
+        $sql = $db->prepare("SELECT id,privilege FROM user WHERE email = ?");
+        $sql->bindParam(1, $_POST["email"]);
+        $sql->execute();
+
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+
+        $_SESSION["userId"] = $results[0]->id;
+        $_SESSION["userType"]= $results[0]->privilege;
+        echo $results[0]->privilege;
     }
 
     public function checkUsernameAndEmail(){
         $db = Registration::getDB();
         $sql = $db->prepare("SELECT username,email FROM user WHERE username = ? OR email = ?");
-        $sql->setFetchMode(PDO::FETCH_OBJ);
+        $sql->bindParam(1, $_POST["username"]);
+        $sql->bindParam(2, $_POST["email"]);
+        $sql->execute();
 
-        echo "true";
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+        if (count($results) == 0) echo "true";
+        else echo "false";
     }
 }

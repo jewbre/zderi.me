@@ -52,6 +52,7 @@ app.controller("registrationCtrl", function($scope) {
                           userType: $scope.userType
                       }
                   }).success(function (msg) {
+
                       $scope.error = "Registration successful. You'll be redirected to home page in few seconds.";
                       $scope.$apply();
                       setTimeout(function() {
