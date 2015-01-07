@@ -15,6 +15,7 @@ include_once "resources/functions.php";
 include_once "View/HostV.php";
 include_once "View/AdminV.php";
 include_once "View/UserV.php";
+include_once "View/SupplierV.php"
 
 ?>
 </body>
@@ -25,6 +26,8 @@ include_once "View/UserV.php";
 
 <?php
     session_start();
+
+    if (!isset($_SESSION["userType"])) $_SESSION["userType"] = 0;
     switch(intval($_SESSION["userType"]) ) {
 
         case 1:
@@ -37,6 +40,10 @@ include_once "View/UserV.php";
             $host->displayView();
             break;
 
+        case 3:
+            $supplier = new SupplierV();
+            $supplier->displayView();
+            break;
 
         case 4:
             $admin = new AdminV();
