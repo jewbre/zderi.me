@@ -7,14 +7,5 @@
  */
 
 function isSessionActive() {
-    if(isset($_SESSION['username'])) {
-        if($_SESSION["username"] != "guest") {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        $_SESSION['username'] = "guest";
-        return false;
-    }
+    return isset($_SESSION['userId']);
 }

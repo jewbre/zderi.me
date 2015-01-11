@@ -37,22 +37,6 @@ body {
     cursor:pointer;
 }
 
-#loginLink{
-    display:inline-block;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: "Agency FB";
-    color: #000000;
-    padding:5px 10px;
-    transition:all 0.15s ease;
-    cursor:pointer;
-}
-
-#loginLink:hover{
-    color:#ffffff;
-    background-color: #000000;
-}
-
 .menuItem:hover {
     color:#000000;
     background-color: #ffffff;
@@ -125,4 +109,17 @@ a {
 
 .searchIcon:hover {
     opacity:1;
+}
+
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.align-left, .align-right {
+    display:inline-block;
+    width:430px;
 }

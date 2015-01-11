@@ -22,7 +22,11 @@ include_once "View/SupplierV.php"
     <div class="topLine">
         CMS for Zderi.me
     </div>
-    <div class="separateLine"></div>
+    <div class="separateLine">
+        <a href="./" class="menu-item">
+            Home
+        </a>
+    </div>
 
 <?php
     session_start();
@@ -51,7 +55,7 @@ include_once "View/SupplierV.php"
             break;
 
         default: ?>
-            <script>window.location.href="index.php"</script>
+            <script>window.location.href="index.php?page=login"</script>
     <?php
     }
 

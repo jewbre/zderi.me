@@ -16,19 +16,31 @@ class Header {
             </div>
 
             <div class="menu">
-                <div class="menuItem">
-                    Menu Item 1
+                <div class="align-left">
+                    <a href="./" class="menuItem">
+                        Home
+                    </a>
+                    <a href="cms.php" class="menuItem">
+                        Profile
+                    </a>
+                    <a href="?page=contact" class="menuItem">
+                        Contact
+                    </a>
                 </div>
-                <div class="menuItem">
-                    Menu Item 2
+                <div class="align-right">
+                    <?php if(!isset($_SESSION["userId"])) {?>
+                    <a href="?page=login" class="menuItem">
+                        Sign in
+                    </a>
+                    <a href="?page=registration" class="menuItem">
+                        Sign up
+                    </a>
+                    <?php } else { ?>
+                    <a href="index.php?page=logout" class="menuItem">
+                        Sign out
+                    </a>
+                    <?php }?>
                 </div>
-                <div class="menuItem">
-                    Menu Item 3
-                </div>
-                <div class="menuItem">
-                    Menu Item 4
-                </div>
-
             </div>
 
         </div>

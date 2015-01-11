@@ -70,7 +70,7 @@
     background: -webkit-linear-gradient(top, #bfd255 0%,#8eb92a 20%,#72aa00 50%,#9ecb2d 100%);
 }
 
-.mealMenuHolder {
+.mealMenuHolder, .gastroCodeHolder {
     position:fixed;
     top:0px;
     left:0px;
@@ -81,6 +81,28 @@
     margin:0 auto;
     overflow-y: scroll;
     display:none;
+}
+
+.gastroCode {
+    display:inline-block;
+    width:800px;
+    font-family: "Agency FB";
+    background-color: rgba(255,255,255,0.5);
+    padding:25px;
+    margin-top:50px;
+}
+
+.gastroCode .codeDisplay {
+    background:#a9a9a9;
+    width:750px;
+    height: 250px;
+    resize: none;
+}
+.gastroCode .jqueryDisplay {
+    background:#a9a9a9;
+    width:750px;
+    height: 70px;
+    resize: none;
 }
 
 .mealMenu {
@@ -127,4 +149,61 @@
 
 .reserveBtn:hover {
     background-color: #ff7300;
+}
+
+
+
+.restaurantDescription {
+    font-size: 12px;
+    color: #919191;
+    margin-bottom: 10px;
+}
+
+.commentOnRank {
+    margin:0 auto;
+    font-size: 12px;
+    color: #919191;
+}
+.rank {
+    display:inline-block;
+    vertical-align: middle;
+    height:25px;
+    width:25px;
+    padding:0px;
+    margin-right:-5px;
+    content: url('http://oi60.tinypic.com/2mxnis.jpg');
+}
+.rank:hover ~ .rank {
+    content: url('http://oi61.tinypic.com/35a6pgz.jpg');
+}
+
+.rankComment {
+    display:inline-block;
+    vertical-align: middle;
+    height:20px;
+    width:150px;
+    resize: none;
+    margin-left: 10px;
+    border-radius: 5px;
+    border:2px inset #cccccc;
+}
+
+.gastroClick {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 0px;
+    cursor: pointer;
+    opacity:0.5;
+    transition: all 0.2s ease-in-out;
+}
+.gastroClick:hover {
+    opacity: 1;
+}
+
+.rankHolder {
+    opacity:0.5;
+    transition: all 0.2s ease-in-out;
+}
+.rankHolder:hover{
+    opacity: 1;
 }

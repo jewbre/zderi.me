@@ -38,10 +38,50 @@ restaurants.controller("restaurantsCtrl", function($scope){
     $scope.hideMenu = function() {
         $(".mealMenuHolder").fadeOut("normal");
     }
+
+    // Show gastro code
+    $scope.showGastro = function (elem) {
+        $.ajax({
+            url : "php/gastro/",
+            type : "POST",
+            data : {
+                calltype : 1,
+                restaurantId : elem.restaurant.id
+            }
+        }).success(function (msg){
+            $scope.gastroCode = msg;
+            $scope.$apply();
+        })
+
+        $(".gastroCodeHolder").fadeIn("normal");
+    }
+
+    $scope.hideGastro = function() {
+        $(".gastroCodeHolder").fadeOut("normal");
+    }
+
+    $scope.rate = function(restaurantId, rate) {
+        $.ajax({
+            url: "php/gastro/",
+            type : "POST",
+            data : {
+                calltype:4,
+                restaurantId : restaurantId,
+                rate : rate,
+                comment : $(".rankComment").val()
+            }
+        }).success(function(msg){
+            $(".ratingHolder").html(msg);
+        })
+    }
 });
 
 $(document).ready(function(){
     $(".mealMenu").click(function(event){
+        event.stopPropagation();
+    });
+
+    $(".gastroCode").click(function(event){
         event.stopPropagation();
     });
 })
