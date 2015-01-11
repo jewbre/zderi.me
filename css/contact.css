@@ -1,0 +1,45 @@
+.contactHolder {
+    display:inline-block;
+    width:860px;
+    padding:20px;
+    text-align: left;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.contactHolder input , .contactHolder textarea {
+    padding: 2px 10px;
+    display:inline-block;
+    vertical-align: middle;
+    border-radius: 5px;
+    width: 500px;
+    outline: none;
+    transition: all 0.15s ease;
+    margin-bottom: 10px;
+}
+
+.contactHolder textarea {
+    border:2px inset #eaeaea;
+    height: 100px;
+    resize: none;
+}
+
+.saveBtn {
+    color:#ffffff;
+    padding:5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.15s ease-in-out;
+}
+
+.saveBtn {
+    background-color: #2517DA;
+    border:2px solid #2517DA;
+}
+.saveBtn:hover {
+    background-color: #6352ff;
+}
+
+.contactHolder p {
+    font-size: 14px;
+    font-weight: bold;
+}

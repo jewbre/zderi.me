@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,48 +21,66 @@
         include_once "View/RestaurantsV.php";
         include_once "View/ReservationV.php";
         include_once "View/LoginV.php";
+        include_once "View/ContactV.php";
 
         $header = new Header();
-        $header->displayHeader();
         if(isset($_GET['page'])) {
             $page = $_GET['page'];
             if(isSessionActive()) {
                 switch($page) {
                     case "registration" :
                         $registration = new RegistrationV();
+                        $header->displayHeader();
                         $registration->displayView();
                         break;
                     case "reservation" :
                         $reservation = new ReservationV();
+                        $header->displayHeader();
                         $reservation->displayView();
+                        break;
+                    case "logout" :
+                        session_destroy();
+                        header("Location: ./");
+                        break;
+                    case "contact" :
+                        $contact = new ContactV();
+                        $header->displayHeader();
+                        $contact->displayView();
                         break;
                     default :
                         $login = new LoginV();
+                        $header->displayHeader();
                         $login->displayView();
                 }
             } else {
                 switch($page) {
                     case "registration" :
                         $registration = new RegistrationV();
+                        $header->displayHeader();
                         $registration->displayView();
                         break;
 
                     // ne moze
                     case "reservation" :
-                        $reservation = new ReservationV();
-                        $reservation->displayView();
-                        break;
                     case "login" :
                         $login = new LoginV();
+                        $header->displayHeader();
                         $login->displayView();
+                        break;
+                    case "contact" :
+                        $contact = new ContactV();
+                        $header->displayHeader();
+                        $contact->displayView();
                         break;
                     default :
                         $view = new RestaurantsV();
+                        $header->displayHeader();
                         $view->displayList();
                 }
             }
         } else {
             $view = new RestaurantsV();
+            $header->displayHeader();
             $view->displayList();
         }
 
