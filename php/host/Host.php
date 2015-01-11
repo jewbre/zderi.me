@@ -444,4 +444,169 @@ class Host {
             }
         }
     }
+
+    public function getSuppliers() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("SELECT id,username,name,lastName FROM user WHERE privilege = 3");
+
+        $sql->execute();
+
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+        $data = array();
+
+        foreach($results as $res) {
+            $set = array();
+            $set["username"] = $res->username;
+            $set["id"] = $res->id;
+            $data[] = $set;
+
+        }
+        echo json_encode($data);
+
+    }
+
+    public function getSupplierIngredients() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("SELECT name, price,unit, id FROM ingredient
+                            JOIN hasingredient ON hasingredient.ingredientId = ingredient.id AND supplierId = ?");
+
+        $sql->bindParam(1, $_POST["id"]);
+        $sql->execute();
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+
+        $data = array();
+        foreach($results as $res) {
+            $set = array();
+            $set["id"] = $res->id;
+            $set["name"] = $res->name;
+            $set["price"] = $res->price;
+            $set["unit"] = $res->unit;
+            $set["amount"] = 0;
+            $data[] = $set;
+        }
+        echo json_encode($data);
+
+    }
+
+    public function insertOrder() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $orderItems = json_decode($_POST["ingredients"]);
+        $flagOk = false;
+        foreach($orderItems as $item) {
+            if (intval($item->amount) > 0 ) {
+                $flagOk = true;
+                break;
+            }
+        }
+
+        if (!$flagOk) {
+            die();
+        }
+        $sql = $db->prepare("INSERT INTO orders (restaurantId,supplierId) VALUES (?,?)");
+        $sql->bindParam(1, $_POST["restaurantId"]);
+        $sql->bindParam(2, $_POST["supplierId"]);
+        $sql->execute();
+
+        $sql = $db->prepare("SELECT id FROM orders WHERE restaurantId = ? AND supplierId = ? ORDER BY id DESC LIMIT 1");
+        $sql->bindParam(1, $_POST["restaurantId"]);
+        $sql->bindParam(2, $_POST["supplierId"]);
+        $sql->execute();
+        $order = $sql->fetch(PDO::FETCH_OBJ);
+        $sql = $db->prepare("INSERT INTO orderitems (ingredientId, orderId, amount, price, unit) VALUES (?,?,?,?,?)");
+        $sql->bindParam(2, $order->id);
+
+        foreach($orderItems as $item) {
+            if (intval($item->amount) > 0) {
+                $sql->bindParam(1, $item->id);
+                $sql->bindParam(3, intval($item->amount));
+                $sql->bindParam(4, $item->price);
+                $sql->bindParam(5, $item->unit);
+                $sql->execute();
+            }
+        }
+
+    }
+
+    public function getOrders() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("SELECT orders.id as orderId,orders.supplierId as supplierId, username as supplierName,ingredient.name as ingredientName,orderitems.amount as ingredientAmount,
+                            orderitems.price as ingredientPrice, restaurant.name as restaurantName, orderitems.unit as ingredientUnit
+                            FROM orders
+                            JOIN orderitems ON orders.id = orderitems.orderId
+                            JOIN ingredient ON orderitems.ingredientId = ingredient.id
+                            JOIN restaurant ON restaurant.id = orders.restaurantId
+                            JOIN user ON user.id = orders.supplierId
+                            WHERE restaurant.host = ?
+                            ORDER BY orders.id DESC");
+        $sql->bindParam(1, intval($_SESSION["userId"]));
+        $sql->execute();
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+        $data = array();
+        foreach($results as $result) {
+            $data[$result->orderId]["orderId"] = $result->orderId;
+            $data[$result->orderId]["supplierName"] = $result->supplierName;
+            $data[$result->orderId]["supplierId"] = $result->supplierId;
+            $data[$result->orderId]["restaurantName"] = $result->restaurantName;
+            $set = array();
+            $set["ingredientName"] = $result->ingredientName;
+            $set["ingredientAmount"] = $result->ingredientAmount;
+            $set["ingredientPrice"] = $result->ingredientPrice;
+            $set["ingredientUnit"] = $result->ingredientUnit;
+            $data[$result->orderId]["ingredients"][] = $set;
+        }
+        $final = array();
+        foreach($data as $key=>$value) {
+            $final[] = $value;
+        }
+        echo json_encode($final);
+    }
+
+    public function getAllIngredients() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("SELECT id,name FROM ingredient");
+        $sql->execute();
+
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+        $data = array();
+        foreach($results as $result) {
+            $set = array();
+            $set["id"] = $result->id;
+            $set["name"] = $result->name;
+            $data[] = $set;
+        }
+
+        echo json_encode($data);
+    }
+
+    public function getQuickSuppliers() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("SELECT username, price,unit FROM hasingredient
+                            JOIN user ON supplierId = id WHERE ingredientId = ?");
+        $sql->bindParam(1, $_POST["ingredientId"]);
+        $sql->execute();
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+
+        $data = array();
+
+        foreach ($results as $result) {
+            $set = array();
+            $set["username"] = $result->username;
+            $set["price"] = $result->price;
+            $set["unit"] = $result->unit;
+            $data[] = $set;
+        }
+
+        echo json_encode($data);
+    }
+
+    public function deleteOrder() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+
+        $sql = $db->prepare("DELETE FROM orders WHERE id = ?");
+        $sql->bindParam(1, $_POST["orderId"]);
+        $sql->execute();
+    }
 } 

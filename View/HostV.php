@@ -217,7 +217,7 @@ class HostV {
                 <div class="functionalityWindow func3">
 
                     <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectStockRestaurant" ng-change="getStock()">
-                        <option value="" disabled>-- Choose your restaurant --</option>
+                            <option value="" disabled>-- Choose your restaurant --</option>
                     </select>
                     <p>{{stockMessage}}</p>
                     <br>
@@ -302,8 +302,55 @@ class HostV {
 
                 <!-- Orders functionality -->
                 <div class="functionalityWindow func5">
-                    Orders
+
+                    <div>
+                        <div>
+                            <h2>Add Order</h2>
+                            <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectOrderRestaurant">
+                                <option value="" disabled>-- Choose your restaurant --</option>
+                            </select>
+                            <select ng-options="supplier.username for supplier in hostSuppliers" ng-model="selectedSupplier" ng-change="getSupplierIngredients()">
+                                <option value="" disabled> --Select Supplier-- </option>
+                            </select>
+                            <div ng-repeat="ingredient in supplierIngredients" class="ingredient">
+                                <h3>{{ ingredient.name }}</h3>
+                                <p>{{ ingredient.price }}</p>
+                                <p>{{ ingredient.unit }}</p>
+                                <input ng-model="ingredient.amount"/>
+                                <label>{{ ingredient.unit }}</label>
+                                <p>= {{ ingredient.amount * ingredient.price }} kn</p>
+                            </div>
+                            <br>
+                            <button ng-click="showOrdersInputForm()" ng-hide="orderInput" >Add New Order</button>
+                            <button ng-click="insertNewOrder()" ng-show="orderInput" >SAVE</button>
+                            <button ng-click="cancelOrdersInputForm()" ng-show="orderInput" >Cancel</button>
+                        </div>
+                        <div>
+                            <select ng-options="ingredient.name for ingredient in quickIngredients" ng-model="selectedIngredient" ng-change="getQuickSuppliers()">
+                                <option value="" disabled>--Quick Search--</option>
+                            </select>
+                            <div ng-repeat="quickSupplier in quickSuppliers">
+                                <h4>{{ quickSupplier.username }}</h4>
+                                <p>{{ quickSupplier.price }} kn/{{quickSupplier.unit}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>Orders</h2>
+                        <div ng-repeat="order in orders">
+                            <p>{{order.supplierName}}</p>
+                            <p>{{order.restaurantName}}</p>
+                            <p ng-repeat="ingredient in order.ingredients">
+                                {{ingredient.ingredientName}}
+                                {{ingredient.ingredientAmount}}
+                                {{ingredient.ingredientPrice}} kn/{{ingredient.ingredientUnit}}
+                            </p>
+                            <button ng-click="deleteOrder(order)">Delete</button>
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
         </div>
 

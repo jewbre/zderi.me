@@ -611,6 +611,111 @@ app.controller("hostCtrl",function($scope){
         }
     }
 
+    //////////////////////////////////////////////
+    // ORDERS
+    // Following is the logic for implementing
+    // stock functionality of the SPA
+    //////////////////////////////////////////////
 
+    $.ajax({
+        url: "php/host/",
+        type: "POST",
+        data: {
+            calltype: 14
+        }
+    }).success(function(msg) {
+        $scope.hostSuppliers = JSON.parse(msg);
+        $scope.$apply();
+    });
 
+    $scope.getSupplierIngredients = function() {
+        $.ajax({
+            url: "php/host/",
+            type: "POST",
+            data: {
+                calltype: 15,
+                id: $scope.selectedSupplier.id
+            }
+        }).success(function(msg) {
+            $scope.supplierIngredients = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+
+    $scope.showOrdersInputForm = function() {
+        //TODO vilim
+        $scope.orderInput = true;
+    }
+
+    $scope.cancelOrdersInputForm = function() {
+        $scope.orderInput = false;
+    }
+
+    $.ajax({
+        url: "php/host/",
+        type: "POST",
+        data: {
+            calltype: 17
+        }
+    }).success(function(msg){
+        $scope.orders = JSON.parse(msg);
+        $scope.$apply();
+    });
+
+    $scope.insertNewOrder = function() {
+        $.ajax({
+            url: "php/host/",
+            type: "POST",
+            data: {
+                ingredients: JSON.stringify($scope.supplierIngredients),
+                restaurantId: $scope.selectOrderRestaurant.id,
+                supplierId: $scope.selectedSupplier.id,
+                calltype: 16
+            }
+        }).success(function(msg) {
+            $scope.orders = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+//TODO
+    $.ajax({
+        url: "php/host/",
+        type: "POST",
+        data: {
+            calltype: 18
+        }
+    }).success(function(msg) {
+        $scope.quickIngredients = JSON.parse(msg);
+        $scope.$apply();
+    });
+
+    $scope.getQuickSuppliers = function() {
+        $.ajax({
+            url: "php/host/",
+            type: "POST",
+            data: {
+                calltype: 19,
+                ingredientId: $scope.selectedIngredient.id
+            }
+        }).success(function(msg){
+            $scope.quickSuppliers = JSON.parse(msg);
+            $scope.$apply();
+        });
+    }
+
+    $scope.deleteOrder = function(elem) {
+        if (confirm("Are you sure you want to delete this order?")) {
+            $.ajax({
+                url: "php/host/",
+                type: "POST",
+                data: {
+                    calltype: 20,
+                    orderId: elem.orderId
+                }
+            }).success(function(msg) {
+                $scope.orders = JSON.parse(msg);
+                $scope.$apply();
+            });
+        }
+    }
 })
