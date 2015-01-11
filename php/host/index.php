@@ -7,6 +7,7 @@
  */
 
 include_once "Host.php";
+session_start();
 switch(intval($_POST["calltype"])) {
     case 1:
         $host = new Host();
@@ -70,5 +71,35 @@ switch(intval($_POST["calltype"])) {
         $host = new Host();
         $host->updateStock();
         $host->getStock();
+        break;
+    case 14:
+        $host = new Host();
+        $host->getSuppliers();
+        break;
+    case 15:
+        $host = new Host();
+        $host->getSupplierIngredients();
+        break;
+    case 16:
+        $host = new Host();
+        $host->insertOrder();
+        $host->getOrders();
+        break;
+    case 17:
+        $host = new Host();
+        $host->getOrders();
+        break;
+    case 18:
+        $host = new Host();
+        $host->getAllIngredients();
+        break;
+    case 19:
+        $host = new Host();
+        $host->getQuickSuppliers();
+        break;
+    case 20:
+        $host = new Host();
+        $host->deleteOrder();
+        $host->getOrders();
         break;
 }

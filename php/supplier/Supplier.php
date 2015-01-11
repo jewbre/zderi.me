@@ -35,7 +35,8 @@ class Supplier {
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("SELECT name, id
                             FROM ingredient
-                             WHERE ingredient.id NOT IN (SELECT ingredientid FROM hasingredient WHERE supplierid = ?)");
+                             WHERE ingredient.id NOT IN (SELECT ingredientid FROM hasingredient WHERE supplierid = ?)
+                             ORDER BY name ASC");
         $sql->bindParam(1, $_SESSION["userId"]);
         $sql->execute();
         $results = $sql->fetchAll(PDO::FETCH_OBJ);
