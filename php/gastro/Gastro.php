@@ -23,7 +23,7 @@ class Gastro {
             <div class="rating-system">
                 <script>
                     $.ajax({
-                        url: "http://localhost/zderi.me/zderi.me/php/gastro/",
+                        url: "http://vdl.hr/zderi.me/php/gastro/",
                         type : "POST",
                         data : {
                             calltype : 2,
@@ -111,7 +111,7 @@ class Gastro {
                     }
 
                     $.ajax({
-                        url: "http://localhost/zderi.me/zderi.me/php/gastro/",
+                        url: "http://vdl.hr/zderi.me/php/gastro/",
                         type: "POST",
                         data: {
                             calltype: 3,

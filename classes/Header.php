@@ -9,6 +9,17 @@
 class Header {
     function displayHeader() {
         ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/design.css">
+
+        <script type="text/javascript" src="js/angular.min.js"></script>
+        <script type="text/javascript" src="js/jQuery.js"></script>
+        <script type="text/javascript" src="js/jQueryCode.js"></script>
+
+    </head>
+    <body>
         <div class="header"  >
             <div id="slider">
                 <img src="resources/images/res1.jpg" class="sliderImage" id="sliderImage1">
@@ -38,7 +49,7 @@ class Header {
                         Sign up
                     </a>
                     <?php } else { ?>
-                    <a href="index.php?page=logout" class="menuItem">
+                    <a href="logout.php" class="menuItem">
                         Sign out
                     </a>
                     <?php }?>

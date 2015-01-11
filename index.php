@@ -1,17 +1,6 @@
 <?php
     session_start();
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="css/design.css">
-
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="js/jQuery.js"></script>
-    <script type="text/javascript" src="js/jQueryCode.js"></script>
-
-</head>
-<body>
 
     <?php
         include_once "classes/Header.php";
@@ -32,10 +21,6 @@
                         $reservation = new ReservationV();
                         $header->displayHeader();
                         $reservation->displayView();
-                        break;
-                    case "logout" :
-                        session_destroy();
-                        header("Location: ./");
                         break;
                     case "contact" :
                         $contact = new ContactV();

@@ -136,12 +136,12 @@ class Host {
             SELECT meal.id as id, meal.name as name, meal.price as price,
                   category.id as category, category.name as categoryName, meal.available as available,
                   ingredient.id as ingredientId, ingredient.name as ingredientName,
-                  mealConsistsOf.units as unit, mealConsistsOf.amount as amount
+                  mealconsistsof.units as unit, mealconsistsof.amount as amount
             FROM meal
-            INNER JOIN mealConsistsOf
-            ON meal.id = mealConsistsOf.mealId
+            INNER JOIN mealconsistsof
+            ON meal.id = mealconsistsof.mealId
             INNER JOIN ingredient
-            ON ingredient.id = mealConsistsOf.ingredientId
+            ON ingredient.id = mealconsistsof.ingredientId
             LEFT JOIN category
             ON meal.categoryId = category.id
             WHERE meal.restaurantId = ?
@@ -201,8 +201,9 @@ class Host {
                             FROM meal
                             INNER JOIN category
                             ON meal.categoryId = category.id
-                            WHERE meal.name = ? ORDER BY meal.id DESC");
+                            WHERE meal.name = ? AND meal.restaurantId = ? ORDER BY meal.id DESC");
         $sql->bindParam(1, $meal->name);
+        $sql->bindParam(2, intval($_POST["restaurantId"]));
         $sql->setFetchMode(PDO::FETCH_OBJ);
         $sql->execute();
 
@@ -212,7 +213,7 @@ class Host {
         }
 
         foreach($meal->normative as $norm) {
-            $sql = $db->prepare("INSERT INTO mealConsistsOf
+            $sql = $db->prepare("INSERT INTO mealconsistsof
                                   VALUES(?,?,?,?)");
             $sql->bindParam(1, $meal->id);
             $sql->bindParam(2, $norm->id);
@@ -243,13 +244,13 @@ class Host {
         $sql->execute();
 
 
-        $sql = $db->prepare("DELETE FROM mealConsistsOf WHERE mealId = ?");
+        $sql = $db->prepare("DELETE FROM mealconsistsof WHERE mealId = ?");
         $sql->bindParam(1, $meal->id);
         $sql->execute();
 
 
         foreach($meal->normative as $norm) {
-            $sql = $db->prepare("INSERT INTO mealConsistsOf
+            $sql = $db->prepare("INSERT INTO mealconsistsof
                                   VALUES(?,?,?,?)");
             $sql->bindParam(1, $meal->id);
             $sql->bindParam(2, $norm->id);
@@ -270,15 +271,15 @@ class Host {
             SELECT reservation.id as id, reservation.barcode as barcode,
               reservation.timestamp as timestamp, reservation.status as status,
               reservationsseats.seatingNumber as seatingNumber, reservationsseats.amount as seatingAmount,
-              reservationMenu.mealId as mealId, reservationMenu.amount as mealAmount,
-              reservationMenu.price as price, meal.name as name
+              reservationmenu.mealId as mealId, reservationmenu.amount as mealAmount,
+              reservationmenu.price as price, meal.name as name
             FROM reservation
-            INNER JOIN reservationsSeats
-            ON reservation.id = reservationsSeats.reservationId
-            LEFT JOIN reservationMenu
-            ON reservation.id = reservationMenu.reservationId
+            INNER JOIN reservationsseats
+            ON reservation.id = reservationsseats.reservationId
+            LEFT JOIN reservationmenu
+            ON reservation.id = reservationmenu.reservationId
             LEFT JOIN meal
-            ON meal.id = reservationMenu.mealId
+            ON meal.id = reservationmenu.mealId
             WHERE reservation.restaurantId = ?
             ORDER BY timestamp desc, seatingNumber, mealId
         ");
@@ -369,7 +370,7 @@ class Host {
         $meals = json_decode($_POST["meals"]);
 
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
-        $sql = $db->prepare("INSERT INTO reservationMenu VALUES(?,?,?,?)");
+        $sql = $db->prepare("INSERT INTO reservationmenu VALUES(?,?,?,?)");
         $sql->bindParam(2, $reservationId);
         foreach($meals as $meal){
             if(intval($meal->mealAmount) < 1) continue;

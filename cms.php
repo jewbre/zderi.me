@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 
 <head>
@@ -29,7 +32,6 @@ include_once "View/SupplierV.php"
     </div>
 
 <?php
-    session_start();
     switch(intval($_SESSION["userType"]) ) {
 
         case 1:

@@ -31,8 +31,8 @@ class Reservation {
             ON restaurant.id = capacity.restaurantId
             LEFT JOIN (SELECT * FROM reservation WHERE timestamp >= ".$startTimestamp." AND timestamp <= ".$endTimestamp." AND restaurantId = ?) as reservation
             ON reservation.restaurantId = restaurant.id
-            LEFT JOIN reservationSSeats
-            ON reservation.id = reservationsSeats.reservationId AND capacity.seatingNumber = reservationsSeats.seatingNumber
+            LEFT JOIN reservationsseats
+            ON reservation.id = reservationsseats.reservationId AND capacity.seatingNumber = reservationsseats.seatingNumber
             WHERE restaurant.id = ?
         ");
         $sql->bindParam(1,$_POST["restaurantId"]);
@@ -86,7 +86,7 @@ class Reservation {
 
         $reservationId = $sql->fetch()->id;
 
-        $sql = $db->prepare("INSERT INTO reservationsSeats VALUES(?,?,?)");
+        $sql = $db->prepare("INSERT INTO reservationsseats VALUES(?,?,?)");
         $sql->bindParam(1,$reservationId);
         foreach($tables as $sn => $amount) {
             $sql->bindParam(2,intval($sn));
@@ -97,7 +97,7 @@ class Reservation {
 
         if($_POST["menu"] != "{}") {
             $menu = json_decode($_POST['menu']);
-            $sql = $db->prepare("INSERT INTO reservationMenu VALUES(?,?,?,?)");
+            $sql = $db->prepare("INSERT INTO reservationmenu VALUES(?,?,?,?)");
             $sql->bindParam(2,$reservationId);
             foreach($menu as $key => $meal) {
                 $sql->bindParam(1,intval($meal->id));
