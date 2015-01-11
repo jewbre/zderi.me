@@ -305,6 +305,7 @@ class HostV {
 
                     <div>
                         <div>
+                            <p ng-bind="error"></p>
                             <h2>Add Order</h2>
                             <select ng-options="restaurant.name for restaurant in restaurants" ng-model="selectOrderRestaurant">
                                 <option value="" disabled>-- Choose your restaurant --</option>

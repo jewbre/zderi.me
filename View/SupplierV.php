@@ -68,6 +68,20 @@ class SupplierV {
                         </div>
                     </div>
                 </div>
+                <div class="func2 functionalityWindow">
+                    <h2>Orders</h2>
+                    <div ng-repeat="order in orders">
+                        <p>{{order.name}}</p>
+                        <p>{{order.address}}</p>
+                        <p ng-repeat="ingredient in order.ingredients">
+                            {{ingredient.ingredientName}}
+                            {{ingredient.ingredientAmount}} {{ingredient.ingredientUnit}}
+                        </p>
+                        <p>{{order.totalPrice}} kn</p>
+                        <button ng-click="acceptOrder(order)">Accept</button>
+                        <button ng-click="declineOrder(order)">Decline</button>
+                    </div>
+                </div>
             </div>
         </div>
     <?php

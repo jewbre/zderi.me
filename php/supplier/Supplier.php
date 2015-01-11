@@ -92,4 +92,73 @@ class Supplier {
         $sql->bindParam(4, $ingredient->ingredientId);
         $sql->execute();
     }
+
+    public function getOrders() {
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("SELECT orders.id as orderId, restaurant.id as restaurantId,restaurant.name as name, restaurant.address as address,
+                            orderitems.amount as ingredientAmount, orderitems.unit as ingredientUnit, orderitems.price as ingredientPrice,
+                            ingredient.name as ingredientName, orderitems.ingredientId as ingredientId, orderitems.amount*orderitems.price as totalPrice
+                            FROM orders
+                            JOIN orderitems ON orders.id = orderitems.orderId
+                            JOIN restaurant ON restaurant.id = orders.restaurantId
+                            JOIN ingredient ON ingredient.id = orderitems.ingredientId
+                            WHERE orders.supplierId = ? AND orders.status = 0
+                            ORDER BY orders.id ASC");
+        $sql->bindParam(1, $_SESSION["userId"]);
+
+        $sql->execute();
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+        $data = array();
+        foreach($results as $result) {
+            $data[$result->orderId]["restaurantId"] = $result->restaurantId;
+            $data[$result->orderId]["orderId"] = $result->orderId;
+            $data[$result->orderId]["name"] = $result->name;
+            $data[$result->orderId]["address"] = $result->address;
+            $set = array();
+            $set["ingredientName"] = $result->ingredientName;
+            $set["ingredientUnit"] = $result->ingredientUnit;
+            $set["ingredientAmount"] = $result->ingredientAmount;
+            if (isset($data[$result->orderId]["totalPrice"])) {
+                $data[$result->orderId]["totalPrice"] += $result->ingredientPrice*$result->ingredientAmount;
+            }
+            else {
+                $data[$result->orderId]["totalPrice"] = $result->ingredientPrice*$result->ingredientAmount;
+            }
+            $data[$result->orderId]["ingredients"][] = $set;
+
+        }
+
+        foreach($data as $key=>$value) {
+            $final[] = $value;
+        }
+        echo json_encode($final);
+
+    }
+
+    public function acceptOrder() {
+        $order = json_decode($_POST["order"]);
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("UPDATE orders SET orders.status = 1 WHERE orders.id = ?");
+        $sql->bindParam(1, $order->orderId);
+        $sql->execute();
+        //TODO ako je prazno dodati unutra u bazu
+        $sql = $db->prepare("UPDATE stock SET amount = amount + ? WHERE restaurantId = ? AND ingredientId = ?");
+        $sql->bindParam(2, $order->restaurantId);
+
+        foreach($order->ingredients as $o) {
+            $sql->bindParam(1, $o->ingredientAmount);
+            $sql->bindParam(3, $o->ingredientId);
+            $sql->execute();
+        }
+
+    }
+
+    public function declineOrder() {
+        $order = json_decode($_POST["order"]);
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
+        $sql = $db->prepare("UPDATE orders SET orders.status = 1 WHERE orders.id = ?");
+        $sql->bindParam(1, $order->orderId);
+        $sql->execute();
+    }
+
 }

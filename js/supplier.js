@@ -157,6 +157,37 @@ app.controller("supplierCtrl",function($scope){
             $scope.$apply();
 
 
+        });
+
+    };
+
+    $.ajax({
+        url: "php/supplier/",
+        type: "POST",
+        data: {
+            calltype: 6
+        }
+    }).success(function(msg){
+        $scope.orders = JSON.parse(msg);
+        $scope.$apply();
     });
+
+    $scope.acceptOrder = function(elem) {
+        if (confirm("Are you sure?")) {
+            $.ajax({
+                url: "php/supplier/",
+                type: "POST",
+                data: {
+                    calltype: 7,
+                    order: JSON.stringify(elem)
+                }
+            }).success(function(msg){
+                $scope.orders = JSON.parse(msg);
+                $scope.$apply();
+            });
+        }
     }
+
+
+
 });
