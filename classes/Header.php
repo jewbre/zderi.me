@@ -20,15 +20,17 @@ class Header {
                     <a href="./" class="menuItem">
                         Home
                     </a>
+                    <?php if(isSessionActive()){?>
                     <a href="cms.php" class="menuItem">
                         Profile
                     </a>
+                    <?php } ?>
                     <a href="?page=contact" class="menuItem">
                         Contact
                     </a>
                 </div>
                 <div class="align-right">
-                    <?php if(!isset($_SESSION["userId"])) {?>
+                    <?php if(!isSessionActive()) {?>
                     <a href="?page=login" class="menuItem">
                         Sign in
                     </a>

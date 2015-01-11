@@ -3,6 +3,7 @@ body {
     padding:0px;
     overflow: hidden;
     font-family: "Agency FB";
+    background-color: #0e0e0e;
 }
 .menu, .mainContent {
     display:inline-block;

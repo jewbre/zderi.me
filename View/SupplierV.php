@@ -10,6 +10,7 @@ class SupplierV {
     public function displayView() {
         ?>
         <link href="css/admin.css" rel="stylesheet" type="text/css" xmlns="http://www.w3.org/1999/html"/>
+        <link href="css/supplier.css" rel="stylesheet" type="text/css" xmlns="http://www.w3.org/1999/html"/>
         <script src="js/supplier.js" type="text/javascript"></script>
         <div ng-app="supplierApp" ng-controller="supplierCtrl" class="mainHolder">
 
@@ -37,7 +38,7 @@ class SupplierV {
                             <option value="kom">kom</option>
                         </select>
                         <br>
-                        <button ng-click="addIngredient()">Add</button>
+                        <button class="saveBtn" ng-click="addIngredient()">Add</button>
                     </div>
                     <div class="editInput" ng-show="show">
                         <h4>{{ingredient.name}}</h4>
@@ -51,8 +52,8 @@ class SupplierV {
                             <option value="kom">kom</option>
                         </select>
                         <br>
-                        <button ng-click="updateIngredient(this)">Update</button>
-                        <button ng-click="cancelEdit()">Cancel</button>
+                        <button class="saveBtn" ng-click="updateIngredient(this)">Update</button>
+                        <button class="cancelBtn" ng-click="cancelEdit()">Cancel</button>
                     </div>
                     <hr>
 
@@ -61,8 +62,8 @@ class SupplierV {
                         <div ng-repeat="supplierIngredient in supplierIngredients | filter:ingredientFilter" class="ingredient">
                             <h3>{{supplierIngredient.name}}</h3>
                             <p>{{supplierIngredient.fullPrice}}</p>
-                            <button ng-click="removeIngredient(this)">Delete</button>
-                            <button ng-click="editIngredient(this)">Edit</button>
+                            <button class="cancelBtn" ng-click="removeIngredient(this)">Delete</button>
+                            <button class="editBtn" ng-click="editIngredient(this)">Edit</button>
                             <br>
 
                         </div>
@@ -70,16 +71,56 @@ class SupplierV {
                 </div>
                 <div class="func2 functionalityWindow">
                     <h2>Orders</h2>
-                    <div ng-repeat="order in orders">
-                        <p>{{order.name}}</p>
-                        <p>{{order.address}}</p>
-                        <p ng-repeat="ingredient in order.ingredients">
-                            {{ingredient.ingredientName}}
-                            {{ingredient.ingredientAmount}} {{ingredient.ingredientUnit}}
-                        </p>
-                        <p>{{order.totalPrice}} kn</p>
-                        <button ng-click="acceptOrder(order)">Accept</button>
-                        <button ng-click="declineOrder(order)">Decline</button>
+                    <table class="ordersTable">
+                        <tr>
+                            <th>
+                                Supplier
+                            </th>
+                            <th>
+                                Restaurant
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Order Items
+                            </th>
+                            <th>
+                                Total price
+                            </th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="order in orders">
+                            <td>
+                                {{order.name}}
+                            </td>
+                            <td>
+                                {{order.address}}
+                            </td>
+                            <td>
+                                {{order.date}}
+                            </td>
+                            <td>
+                                {{order.status}}
+                            </td>
+                            <td>
+                                <div ng-repeat="ingredient in order.ingredients">
+                                    {{ingredient.ingredientName}} :
+                                    {{ingredient.ingredientAmount}} {{ingredient.ingredientUnit}}
+                                </div>
+                            </td>
+                            <td>
+                                {{order.totalPrice}} kn
+                            </td>
+                            <td>
+                                <img src="resources/images/confirm.png" ng-click="acceptOrder(order)" />
+                                <img src="resources/images/delete.png" ng-click="declineOrder(order)" />
+                            </td>
+                        </tr>
+                    </table>
                     </div>
                 </div>
             </div>

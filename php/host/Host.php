@@ -12,7 +12,7 @@ class Host {
 
     public function addNewRestaurant() {
         $newRestaurant = json_decode($_POST["obj"]);
-        $user = 1;
+        $user = $_SESSION["userId"];
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("INSERT INTO restaurant(name,description,contact,address,city,host,picture)
                             VALUES(?,?,?,?,?,?,?)");
@@ -49,7 +49,7 @@ class Host {
 
 
     public function getRestaurants(){
-        $user = 1;
+        $user = $_SESSION["userId"];
 
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("SELECT restaurant.id as id, restaurant.name as name, restaurant.description as description,
@@ -531,7 +531,7 @@ class Host {
     public function getOrders() {
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("SELECT orders.id as orderId,orders.supplierId as supplierId, username as supplierName,ingredient.name as ingredientName,orderitems.amount as ingredientAmount,
-                            orderitems.price as ingredientPrice, restaurant.name as restaurantName, orderitems.unit as ingredientUnit
+                            orderitems.price as ingredientPrice, restaurant.name as restaurantName, orderitems.unit as ingredientUnit, orders.date as date, orders.status as status
                             FROM orders
                             JOIN orderitems ON orders.id = orderitems.orderId
                             JOIN ingredient ON orderitems.ingredientId = ingredient.id
@@ -548,6 +548,13 @@ class Host {
             $data[$result->orderId]["supplierName"] = $result->supplierName;
             $data[$result->orderId]["supplierId"] = $result->supplierId;
             $data[$result->orderId]["restaurantName"] = $result->restaurantName;
+            $data[$result->orderId]["date"] = $result->date;
+
+            switch(intval($result->status)) {
+                case 0: $data[$result->orderId]["status"] = "Pending"; break;
+                case 1: $data[$result->orderId]["status"] = "Payed"; break;
+                case 2: $data[$result->orderId]["status"] = "Canceled"; break;
+            }
             $set = array();
             $set["ingredientName"] = $result->ingredientName;
             $set["ingredientAmount"] = $result->ingredientAmount;

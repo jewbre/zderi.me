@@ -97,7 +97,7 @@ class Supplier {
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
         $sql = $db->prepare("SELECT orders.id as orderId, restaurant.id as restaurantId,restaurant.name as name, restaurant.address as address,
                             orderitems.amount as ingredientAmount, orderitems.unit as ingredientUnit, orderitems.price as ingredientPrice,
-                            ingredient.name as ingredientName, orderitems.ingredientId as ingredientId, orderitems.amount*orderitems.price as totalPrice
+                            ingredient.name as ingredientName, orderitems.ingredientId as ingredientId, orderitems.amount*orderitems.price as totalPrice, orders.date as date, orders.status as status
                             FROM orders
                             JOIN orderitems ON orders.id = orderitems.orderId
                             JOIN restaurant ON restaurant.id = orders.restaurantId
@@ -114,6 +114,14 @@ class Supplier {
             $data[$result->orderId]["orderId"] = $result->orderId;
             $data[$result->orderId]["name"] = $result->name;
             $data[$result->orderId]["address"] = $result->address;
+            $data[$result->orderId]["date"] = $result->date;
+
+            switch(intval($result->status)){
+                case 0: $data[$result->orderId]["status"] = "Pending"; break;
+                case 1: $data[$result->orderId]["status"] = "Payed"; break;
+                case 2: $data[$result->orderId]["status"] = "Canceled"; break;
+            }
+
             $set = array();
             $set["ingredientName"] = $result->ingredientName;
             $set["ingredientUnit"] = $result->ingredientUnit;

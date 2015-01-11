@@ -643,12 +643,13 @@ app.controller("hostCtrl",function($scope){
     }
 
     $scope.showOrdersInputForm = function() {
-        //TODO vilim
-        $scope.orderInput = true;
+        $(".newOrderHolder").slideDown("normal");
+        $(".newOrderBtn").fadeOut("normal");
     }
 
     $scope.cancelOrdersInputForm = function() {
-        $scope.orderInput = false;
+        $(".newOrderHolder").slideUp("normal");
+        $(".newOrderBtn").fadeIn("normal");
     }
 
     $.ajax({
@@ -663,7 +664,7 @@ app.controller("hostCtrl",function($scope){
     });
 
     $scope.insertNewOrder = function() {
-        if ( angular.isUndefined($scope.selectedSupplier) || angular.isUndefined($scope.restaurant)) {
+        if ( angular.isUndefined($scope.selectedSupplier) || angular.isUndefined($scope.selectOrderRestaurant)) {
             $scope.error = "Please select restaurant and supplier.";
         }
         else {
@@ -679,6 +680,7 @@ app.controller("hostCtrl",function($scope){
             }).success(function(msg) {
                 $scope.orders = JSON.parse(msg);
                 $scope.error = "";
+                $scope.cancelOrdersInputForm();
                 $scope.$apply();
             });
         }
