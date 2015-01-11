@@ -663,21 +663,28 @@ app.controller("hostCtrl",function($scope){
     });
 
     $scope.insertNewOrder = function() {
-        $.ajax({
-            url: "php/host/",
-            type: "POST",
-            data: {
-                ingredients: JSON.stringify($scope.supplierIngredients),
-                restaurantId: $scope.selectOrderRestaurant.id,
-                supplierId: $scope.selectedSupplier.id,
-                calltype: 16
-            }
-        }).success(function(msg) {
-            $scope.orders = JSON.parse(msg);
-            $scope.$apply();
-        });
+        if ( angular.isUndefined($scope.selectedSupplier) || angular.isUndefined($scope.restaurant)) {
+            $scope.error = "Please select restaurant and supplier.";
+        }
+        else {
+            $.ajax({
+                url: "php/host/",
+                type: "POST",
+                data: {
+                    ingredients: JSON.stringify($scope.supplierIngredients),
+                    restaurantId: $scope.selectOrderRestaurant.id,
+                    supplierId: $scope.selectedSupplier.id,
+                    calltype: 16
+                }
+            }).success(function(msg) {
+                $scope.orders = JSON.parse(msg);
+                $scope.error = "";
+                $scope.$apply();
+            });
+        }
+
     }
-//TODO
+
     $.ajax({
         url: "php/host/",
         type: "POST",

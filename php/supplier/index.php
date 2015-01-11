@@ -29,4 +29,13 @@ switch(intval($_POST["calltype"])) {
     case 5:
         $supplier->updateIngredients();
         break;
+
+    case 6:
+        $supplier->getOrders();
+        break;
+
+    case 7:
+        $supplier->acceptOrder();
+        $supplier->getOrders();
+        break;
 }
