@@ -32,11 +32,11 @@ app.controller("loginCtrl", function($scope) {
                     $scope.error = "Wrong email or password.";
                     $scope.$apply();
                 } else {
-                    $scope.error = "Login successful. You'll be redirected to main page in few seconds.";
+                    $scope.error = "Login successful. You'll be redirected to main page in a few seconds.";
                     $scope.$apply();
                     setTimeout(function () {
                         window.location.href = "index.php";
-                    }, 10000)
+                    }, 3000)
                 }
             })
 

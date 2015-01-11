@@ -28,11 +28,6 @@
             $page = $_GET['page'];
             if(isSessionActive()) {
                 switch($page) {
-                    case "registration" :
-                        $registration = new RegistrationV();
-                        $header->displayHeader();
-                        $registration->displayView();
-                        break;
                     case "reservation" :
                         $reservation = new ReservationV();
                         $header->displayHeader();
@@ -48,9 +43,9 @@
                         $contact->displayView();
                         break;
                     default :
-                        $login = new LoginV();
+                        $view = new RestaurantsV();
                         $header->displayHeader();
-                        $login->displayView();
+                        $view->displayList();
                 }
             } else {
                 switch($page) {

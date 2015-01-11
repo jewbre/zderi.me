@@ -10,19 +10,17 @@ class LoginV {
     public function displayView() {
     ?>
         <script src="js/login.js"></script>
+        <link href="css/login.css" rel="stylesheet" type="text/css" />
+
 
         <div ng-app="loginApp" ng-controller="loginCtrl" class="loginWindow">
             <p ng-bind="error"></p>
             <br>
-            <label>Email:</label>
-            <br>
             <input type="text" ng-model="email" placeholder="Email..."/>
-            <br>
-            <label>Password:</label>
             <br>
             <input type="password" ng-model="password" placeholder="Password..."/>
             <br>
-            <button ng-click="validateLogin()" class="loginBtn">Login</button>
+            <button ng-click="validateLogin()" class="saveBtn">Login</button>
         </div>
     <?php
     }
