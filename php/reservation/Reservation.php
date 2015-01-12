@@ -5,6 +5,7 @@
  * Date: 15.12.2014.
  * Time: 23:58
  */
+session_start();
 include_once "../../resources/constants.php";
 class Reservation {
 
@@ -57,7 +58,7 @@ class Reservation {
     public function makeReservation(){
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
 
-        $userId = 2;
+        $userId = $_SESSION["userId"];
         $status = "pending";
 
         $time = explode("-",$_POST["date"]);
@@ -68,6 +69,7 @@ class Reservation {
             die();
         }
 
+        $timestamp = $_POST["date"]." ".$_POST["time"]."-00-00";
         $tables = json_decode($_POST["tables"]);
         $restaurantId = $_POST["restaurantId"];
 
