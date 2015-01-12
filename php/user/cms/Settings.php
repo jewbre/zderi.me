@@ -57,7 +57,8 @@ class Settings {
     public function getReservations() {
         $db = Settings::getDB();
         $sql = $db->prepare("SELECT reservation.id as reservationId, restaurant.name as restaurantName, reservation.timestamp as time,
-                            meal.name as mealName, reservationmenu.amount as mealAmount, reservationmenu.price as mealPrice
+                            meal.name as mealName, reservationmenu.amount as mealAmount, reservationmenu.price as mealPrice,
+                            (SELECT SUM(seatingNumber*amount) as numberOfSeats FROM reservationsseats WHERE reservationId = reservation.id GROUP BY reservationId) as numberOfSeats
                             FROM reservation
                             LEFT JOIN reservationmenu ON reservation.id = reservationmenu.reservationId
                             LEFT JOIN meal ON reservationmenu.mealId = meal.id
@@ -69,7 +70,6 @@ class Settings {
         $sql->execute();
         $results = $sql->fetchAll(PDO::FETCH_OBJ);
 
-        $sql = $db->prepare("SELECT SUM(seatingNumber*amount) as numberOfSeats FROM reservationsseats WHERE reservationId = ? GROUP BY reservationId");
 
         $data = array();
         $set = array();
@@ -79,14 +79,11 @@ class Settings {
             if ($result->reservationId != $lastId) {
                 if ($lastId != -1) $data[] = $set;
                 $set = array();
-                $sql->bindParam(1, $result->reservationId);
-                $sql->execute();
-                $seats = $sql->fetch(PDO::FETCH_OBJ);
                 $lastId = $result->reservationId;
                 $set["reservationId"] = $result->reservationId;
                 $set["restaurantName"] = $result->restaurantName;
                 $set["time"] = $result->time;
-                $set["numberOfSeats"] = $seats->numberOfSeats;
+                $set["numberOfSeats"] = $result->numberOfSeats;
                 $set["totalPrice"] = 0;
             }
             $meal["mealName"] = $result->mealName;
