@@ -713,7 +713,11 @@ app.controller("hostCtrl",function($scope){
     }
 
     $scope.deleteOrder = function(elem) {
-        if (confirm("Are you sure you want to delete this order?")) {
+        var ask = true;
+        if (elem.status == "Pending") {
+            ask = confirm("Are you sure you want to cancel this order?");
+        }
+        if (ask) {
             $.ajax({
                 url: "php/host/",
                 type: "POST",

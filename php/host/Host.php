@@ -553,7 +553,7 @@ class Host {
 
             switch(intval($result->status)) {
                 case 0: $data[$result->orderId]["status"] = "Pending"; break;
-                case 1: $data[$result->orderId]["status"] = "Payed"; break;
+                case 1: $data[$result->orderId]["status"] = "Paid"; break;
                 case 2: $data[$result->orderId]["status"] = "Canceled"; break;
             }
             $set = array();

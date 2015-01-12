@@ -13,4 +13,11 @@ switch (intval($_POST["calltype"])) {
     case 1: $settings->getUserData(); break;
 
     case 2: $settings->saveUserData(); break;
+
+    case 3: $settings->getReservations();break;
+
+    case 4:
+        $settings->deleteReservation();
+        $settings->getReservations();
+        break;
 }

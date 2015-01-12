@@ -53,4 +53,57 @@ class Settings {
         $sql->execute();
 
     }
+
+    public function getReservations() {
+        $db = Settings::getDB();
+        $sql = $db->prepare("SELECT reservation.id as reservationId, restaurant.name as restaurantName, reservation.timestamp as time,
+                            meal.name as mealName, reservationmenu.amount as mealAmount, reservationmenu.price as mealPrice
+                            FROM reservation
+                            JOIN reservationmenu ON reservation.id = reservationmenu.reservationId
+                            JOIN meal ON reservationmenu.mealId = meal.id
+                            JOIN restaurant ON restaurant.id = reservation.restaurantId
+                            WHERE reservation.userId = ? AND status = 'pending'
+                            ORDER BY reservation.id ASC");
+
+        $sql->bindParam(1,$_SESSION["userId"]);
+        $sql->execute();
+        $results = $sql->fetchAll(PDO::FETCH_OBJ);
+
+        $sql = $db->prepare("SELECT SUM(seatingNumber*amount) as numberOfSeats FROM reservationsseats WHERE reservationId = ? GROUP BY reservationId");
+
+        $data = array();
+        $set = array();
+        $lastId = -1;
+        foreach ($results as $result) {
+            $meal = array();
+            if ($result->reservationId != $lastId) {
+                if ($lastId != -1) $data[] = $set;
+                $set = array();
+                $sql->bindParam(1, $result->reservationId);
+                $sql->execute();
+                $seats = $sql->fetch(PDO::FETCH_OBJ);
+                $lastId = $result->reservationId;
+                $set["reservationId"] = $result->reservationId;
+                $set["restaurantName"] = $result->restaurantName;
+                $set["time"] = $result->time;
+                $set["numberOfSeats"] = $seats->numberOfSeats;
+                $set["totalPrice"] = 0;
+            }
+            $meal["mealName"] = $result->mealName;
+            $meal["mealAmount"] = $result->mealAmount;
+            $meal["mealPrice"] = $result->mealPrice;
+            $set["meals"][] = $meal;
+            $set["totalPrice"] = $set["totalPrice"] + $result->mealPrice * $result->mealAmount;
+        }
+        if (count($results) != 0) $data[] = $set;
+        echo json_encode($data);
+    }
+
+    public function deleteReservation() {
+        $db = Settings::getDB();
+
+        $sql = $db->prepare("DELETE FROM reservation WHERE id = ? ");
+        $sql->bindParam(1, $_POST["reservationId"]);
+        $sql->execute();
+    }
 }

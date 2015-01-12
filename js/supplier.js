@@ -188,6 +188,22 @@ app.controller("supplierCtrl",function($scope){
         }
     }
 
+    $scope.declineOrder = function(elem) {
+        if (confirm("Are you sure?")) {
+            $.ajax({
+                url: "php/supplier/",
+                type: "POST",
+                data: {
+                    calltype: 8,
+                    order: JSON.stringify(elem)
+                }
+            }).success(function(msg){
+                $scope.orders = JSON.parse(msg);
+                $scope.$apply();
+            });
+        }
+    }
+
 
 
 });

@@ -50,5 +50,33 @@ app.controller("userCtrl", function($scope) {
 
     }
 
+    $.ajax({
+        url: "php/user/cms/",
+        type: "POST",
+        data: {
+            calltype: 3
+        }
+    }).success(function(msg){
+        $scope.reservations = JSON.parse(msg);
+        console.log($scope.reservations);
+        $scope.$apply();
+    })
+
+
+    $scope.cancelReservation = function(elem) {
+        if (confirm("Are you sure you want to cancel reservation?")) {
+            $.ajax({
+                url: "php/user/cms/",
+                type: "POST",
+                data: {
+                    reservationId: elem.reservationId,
+                    calltype: 4
+                }
+            }).success(function(msg){
+                $scope.reservations = JSON.parse(msg);
+                $scope.$apply();
+            })
+        }
+    }
 
 });

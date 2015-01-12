@@ -48,6 +48,12 @@ class UserV {
                     <button class="saveBtn" ng-click="saveUserChanges()">Save</button>
                 </div>
 
+                <div ng-repeat="reservation in reservations">
+                    <p> {{ reservation.restaurantName }} {{ reservation.time }} {{ reservation.numberOfSeats }} {{ reservation.totalPrice }}</p>
+                    <div ng-repeat="meal in reservation.meals"> {{ meal.mealName }} => {{ meal.mealAmount }} {{meal.mealPrice}}</div>
+                    <button ng-click="cancelReservation(reservation)">Cancel</button>
+                </div>
+
             </div>
 
         </div>

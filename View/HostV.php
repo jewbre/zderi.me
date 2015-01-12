@@ -384,7 +384,7 @@ class HostV {
                                     </div>
                                 </td>
                                 <td>
-                                    <img src="resources/images/delete.png" ng-click="deleteOrder(order)" ng-show="order.status == 'Pending'"/>
+                                    <img src="resources/images/delete.png" ng-click="deleteOrder(order)"/>
                                 </td>
                             </tr>
                         </table>
