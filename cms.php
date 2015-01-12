@@ -32,8 +32,6 @@ include_once "View/SupplierV.php"
     </div>
 
 <?php
-    $_SESSION["userType"] = 1;
-    $_SESSION["userId"] = 2;
     switch(intval($_SESSION["userType"]) ) {
 
         case 1:
