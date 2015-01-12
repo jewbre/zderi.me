@@ -59,8 +59,8 @@ class Settings {
         $sql = $db->prepare("SELECT reservation.id as reservationId, restaurant.name as restaurantName, reservation.timestamp as time,
                             meal.name as mealName, reservationmenu.amount as mealAmount, reservationmenu.price as mealPrice
                             FROM reservation
-                            JOIN reservationmenu ON reservation.id = reservationmenu.reservationId
-                            JOIN meal ON reservationmenu.mealId = meal.id
+                            LEFT JOIN reservationmenu ON reservation.id = reservationmenu.reservationId
+                            LEFT JOIN meal ON reservationmenu.mealId = meal.id
                             JOIN restaurant ON restaurant.id = reservation.restaurantId
                             WHERE reservation.userId = ? AND status = 'pending'
                             ORDER BY reservation.id ASC");
