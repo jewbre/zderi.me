@@ -17,13 +17,18 @@ label {
     width: 100px;
 }
 
-.mainContent {
-    padding:20px;
-}
 
 span {
     font-weight: bold;
     color: #4e4e4e;
     font-size: 14px;
     margin:5px;
+}
+
+.editUser, .reservationHolder {
+    display: inline-block;
+    vertical-align: top;
+    width:40%;
+    min-width: 400px;
+    margin: 20px;
 }

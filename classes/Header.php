@@ -32,10 +32,14 @@ class Header {
                         Home
                     </a>
                     <?php if(isSessionActive()){?>
-                    <a href="cms.php" class="menuItem">
+                    <a href="profile.php" class="menuItem">
                         Profile
                     </a>
-                    <?php } ?>
+                        <?php if($_SESSION["userType"]>1) {?>
+                            <a href="cms.php" class="menuItem">
+                                CMS
+                            </a>
+                    <?php }} ?>
                     <a href="?page=contact" class="menuItem">
                         Contact
                     </a>

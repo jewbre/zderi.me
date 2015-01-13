@@ -389,6 +389,54 @@ class Host {
         $sql->bindParam(2, intval($_POST["reservationId"]));
         $sql->execute();
 
+        if($_POST["status"] == "confirmed") {
+            $sql = $db->prepare("
+                SELECT stock.units as units, reservation.restaurantId as restaurantId, mealconsistsof.ingredientid as ingredientId, (IFNULL(stock.amount,0) - SUM(mealconsistsof.amount * reservationmenu.amount)) as total
+                FROM reservation
+                JOIN reservationmenu on reservation.id = reservationmenu.reservationid
+                JOIN mealconsistsof on mealconsistsof.mealid = reservationmenu.mealid
+                LEFT JOIN stock on stock.ingredientid = mealconsistsof.ingredientid
+                WHERE reservation.id = ?
+                GROUP BY mealconsistsof.ingredientid, stock.amount, reservation.restaurantid, stock.units
+                UNION
+                SELECT stock.units as units, stock.restaurantId as restaurantId, stock.ingredientId as ingredientId, stock.amount as total
+                FROM stock
+                WHERE stock.ingredientId NOT IN(
+                        SELECT DISTINCT mealconsistsof.ingredientId
+                        FROM reservation
+                        JOIN reservationmenu on reservation.id = reservationmenu.reservationid
+                        JOIN mealconsistsof on mealconsistsof.mealid = reservationmenu.mealid
+                        WHERE reservation.id = ?)
+            ");
+            $sql->bindParam(1,$_POST["reservationId"]);
+            $sql->bindParam(2,$_POST["reservationId"]);
+            $sql->setFetchMode(PDO::FETCH_OBJ);
+            $sql->execute();
+
+            $stock = array();
+            foreach($sql as $item){
+                $set = array();
+                $restaurantId = $item->restaurantId;
+                $set["restaurantId"] = $item->restaurantId;
+                $set["ingredientId"] = $item->ingredientId;
+                $set["units"] = $item->units;
+                $set["total"] = $item->total;
+                $stock[] = $set;
+            }
+
+            $sql = $db->prepare("DELETE FROM stock WHERE restaurantId = ?");
+            $sql->bindParam(1, $restaurantId);
+            $sql->execute();
+
+            $sql = $db->prepare("INSERT INTO stock VALUES(?,?,?,?)");
+            $sql->bindParam(2,$restaurantId);
+            foreach($stock as $item){
+                $sql->bindParam(1,$item["ingredientId"]);
+                $sql->bindParam(3,$item["units"]);
+                $sql->bindParam(4,$item["total"]);
+                $sql->execute();
+            }
+        }
     }
 
 

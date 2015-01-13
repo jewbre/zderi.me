@@ -55,44 +55,77 @@ class Settings {
     }
 
     public function getReservations() {
-        $db = Settings::getDB();
-        $sql = $db->prepare("SELECT reservation.id as reservationId, restaurant.name as restaurantName, reservation.timestamp as time,
-                            meal.name as mealName, reservationmenu.amount as mealAmount, reservationmenu.price as mealPrice,
-                            (SELECT SUM(seatingNumber*amount) as numberOfSeats FROM reservationsseats WHERE reservationId = reservation.id GROUP BY reservationId) as numberOfSeats
-                            FROM reservation
-                            LEFT JOIN reservationmenu ON reservation.id = reservationmenu.reservationId
-                            LEFT JOIN meal ON reservationmenu.mealId = meal.id
-                            JOIN restaurant ON restaurant.id = reservation.restaurantId
-                            WHERE reservation.userId = ? AND status = 'pending'
-                            ORDER BY reservation.id ASC");
+        $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
 
+        $sql = $db->prepare("
+            SELECT reservation.id as id, reservation.barcode as barcode,
+              reservation.timestamp as timestamp, reservation.status as status,
+              reservationsseats.seatingNumber as seatingNumber, reservationsseats.amount as seatingAmount,
+              reservationmenu.mealId as mealId, reservationmenu.amount as mealAmount,
+              reservationmenu.price as price, meal.name as name
+            FROM reservation
+            INNER JOIN reservationsseats
+            ON reservation.id = reservationsseats.reservationId
+            LEFT JOIN reservationmenu
+            ON reservation.id = reservationmenu.reservationId
+            LEFT JOIN meal
+            ON meal.id = reservationmenu.mealId
+            WHERE reservation.userId = ?
+            ORDER BY timestamp desc, seatingNumber, mealId
+        ");
         $sql->bindParam(1,$_SESSION["userId"]);
+        $sql->setFetchMode(PDO::FETCH_OBJ);
         $sql->execute();
-        $results = $sql->fetchAll(PDO::FETCH_OBJ);
-
 
         $data = array();
-        $set = array();
-        $lastId = -1;
-        foreach ($results as $result) {
-            $meal = array();
-            if ($result->reservationId != $lastId) {
-                if ($lastId != -1) $data[] = $set;
+        $set["id"] = -1;
+        $meals = array();
+        $seats = array();
+
+        foreach($sql as $reservation) {
+            if(intval($reservation->id) != intval($set["id"])) {
+                if($set["id"]>0){
+                    $set["meals"] = $meals;
+                    $set["seats"] = $seats;
+                    $data[] = $set;
+                }
+
                 $set = array();
-                $lastId = $result->reservationId;
-                $set["reservationId"] = $result->reservationId;
-                $set["restaurantName"] = $result->restaurantName;
-                $set["time"] = $result->time;
-                $set["numberOfSeats"] = $result->numberOfSeats;
-                $set["totalPrice"] = 0;
+                $meals = array();
+                $seats = array();
+
+                $set["id"] = intval($reservation->id);
+                $set["barcode"] = $reservation->barcode;
+                $set["timestamp"] = $reservation->timestamp;
+                $set["status"] = $reservation->status;
+
+                $seats[$reservation->seatingNumber]["seatingNumber"] = $reservation->seatingNumber;
+                $seats[$reservation->seatingNumber]["seatingAmount"] = $reservation->seatingAmount;
+
+                if($reservation->mealId != null){
+                    $meals[$reservation->mealId]["mealId"] = $reservation->mealId;
+                    $meals[$reservation->mealId]["mealAmount"] = $reservation->mealAmount;
+                    $meals[$reservation->mealId]["price"] = $reservation->price;
+                    $meals[$reservation->mealId]["name"] = $reservation->name;
+                }
+            } else {
+                $seats[$reservation->seatingNumber]["seatingNumber"] = $reservation->seatingNumber;
+                $seats[$reservation->seatingNumber]["seatingAmount"] = $reservation->seatingAmount;
+
+                if($reservation->mealId != null){
+                    $meals[$reservation->mealId]["mealId"] = $reservation->mealId;
+                    $meals[$reservation->mealId]["mealAmount"] = $reservation->mealAmount;
+                    $meals[$reservation->mealId]["price"] = $reservation->price;
+                    $meals[$reservation->mealId]["name"] = $reservation->name;
+                }
             }
-            $meal["mealName"] = $result->mealName;
-            $meal["mealAmount"] = $result->mealAmount;
-            $meal["mealPrice"] = $result->mealPrice;
-            $set["meals"][] = $meal;
-            $set["totalPrice"] = $set["totalPrice"] + $result->mealPrice * $result->mealAmount;
+
         }
-        if (count($results) != 0) $data[] = $set;
+
+        $set["meals"] = $meals;
+        $set["seats"] = $seats;
+        $data[] = $set;
+
         echo json_encode($data);
     }
 

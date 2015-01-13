@@ -41,20 +41,12 @@ include_once "View/SupplierV.php"
 
 <?php
     switch(intval($_SESSION["userType"]) ) {
-
+        case 1:
         case 2:
-            $host = new HostV();
-            $host->displayView();
-            break;
-
         case 3:
-            $supplier = new SupplierV();
-            $supplier->displayView();
-            break;
-
         case 4:
-            $admin = new AdminV();
-            $admin->displayView();
+            $user = new UserV();
+            $user->displayView();
             break;
 
         default: ?>

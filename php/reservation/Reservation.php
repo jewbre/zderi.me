@@ -14,23 +14,22 @@ class Reservation {
         $db = new PDO("mysql:host=".HOST.";dbname=".DBNAME, DB_USERNAME, DB_PASSWORD);
 
         $parts1 = explode(" ",$_POST["timestamp"]);
-        $time = explode("-",$parts1[0]);
-
-        $timestamp = mktime(intval($parts1[1]),0,0,intval($time[1]),intval($time[2]),intval($time[0]));
-        if($timestamp < time()){
+        if(intval($parts1[1]) < 10) $parts1[1]="0".$parts1[1];
+        $requestedTimestamp = $parts1[0]." ".($parts1[1])."-00-00";
+        $timestamp = date("Y-m-d H-i-s");
+        if($requestedTimestamp < $timestamp){
             echo "invalid";
             die();
         }
-        $startTimestamp = $timestamp-3*3600;
-        $endTimestamp = $timestamp+3*3600;
-
+        $startTimestamp = $parts1[0]." ".($parts1[1]-3)."-00-00";
+        $endTimestamp = $parts1[0]." ".($parts1[1]+3)."-00-00";
 
 
         $sql = $db->prepare("
             SELECT capacity.seatingNumber as sn, (capacity.amount - IFNULL(reservationsseats.amount,0)) as free FROM restaurant
             INNER JOIN capacity
             ON restaurant.id = capacity.restaurantId
-            LEFT JOIN (SELECT * FROM reservation WHERE timestamp >= ".$startTimestamp." AND timestamp <= ".$endTimestamp." AND restaurantId = ?) as reservation
+            LEFT JOIN (SELECT * FROM reservation WHERE timestamp >= '".$startTimestamp."' AND timestamp <= '".$endTimestamp."' AND restaurantId = ?) as reservation
             ON reservation.restaurantId = restaurant.id
             LEFT JOIN reservationsseats
             ON reservation.id = reservationsseats.reservationId AND capacity.seatingNumber = reservationsseats.seatingNumber

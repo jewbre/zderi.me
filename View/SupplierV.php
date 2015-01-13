@@ -28,7 +28,7 @@ class SupplierV {
                             <option value="" disabled>-- Select ingredient --</option>
                         </select>
                         <br>
-                        <label>Price</label>
+                        <label>Quantity</label>
                         <input type="number" min="1" ng-model="ingredientPrice"/>
                         <select ng-model="ingredientUnit">
                             <option value="g">g</option>

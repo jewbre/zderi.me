@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2014 at 07:56 PM
+-- Generation Time: Jan 13, 2015 at 07:45 PM
 -- Server version: 5.6.20
 -- PHP Version: 5.5.15
 
@@ -64,7 +64,8 @@ CREATE TABLE IF NOT EXISTS `deliversfor` (
 CREATE TABLE IF NOT EXISTS `hasingredient` (
   `ingredientId` int(11) NOT NULL,
   `supplierId` int(11) NOT NULL,
-  `price` int(11) NOT NULL
+  `price` int(11) NOT NULL,
+  `unit` varchar(8) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -89,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `images` (
 CREATE TABLE IF NOT EXISTS `ingredient` (
 `id` int(11) NOT NULL,
   `name` varchar(30) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=53 ;
 
 -- --------------------------------------------------------
 
@@ -101,9 +102,10 @@ CREATE TABLE IF NOT EXISTS `meal` (
 `id` int(11) NOT NULL,
   `name` varchar(30) COLLATE utf8_bin NOT NULL,
   `price` int(11) NOT NULL,
-  `categoryId` int(11) NOT NULL,
-  `restaurantId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  `categoryId` int(11) DEFAULT NULL,
+  `restaurantId` int(11) NOT NULL,
+  `available` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=50 ;
 
 -- --------------------------------------------------------
 
@@ -114,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `meal` (
 CREATE TABLE IF NOT EXISTS `mealconsistsof` (
   `mealId` int(11) NOT NULL,
   `ingredientId` int(11) NOT NULL,
-  `units` varchar(2) COLLATE utf8_bin NOT NULL,
+  `units` varchar(4) COLLATE utf8_bin NOT NULL,
   `amount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -128,7 +130,8 @@ CREATE TABLE IF NOT EXISTS `orderitems` (
   `ingredientId` int(11) NOT NULL,
   `orderId` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
-  `price` int(11) NOT NULL
+  `price` int(11) NOT NULL,
+  `unit` varchar(5) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -142,8 +145,9 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `restaurantId` int(11) NOT NULL,
   `supplierId` int(11) NOT NULL,
   `orderNo` int(11) NOT NULL,
-  `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  `date` datetime NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 -- --------------------------------------------------------
 
@@ -158,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `rating` (
   `comment` varchar(150) COLLATE utf8_bin NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=15 ;
 
 -- --------------------------------------------------------
 
@@ -171,9 +175,9 @@ CREATE TABLE IF NOT EXISTS `reservation` (
   `restaurantId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `barcode` varchar(30) COLLATE utf8_bin NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` varchar(10) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=21 ;
 
 -- --------------------------------------------------------
 
@@ -213,8 +217,9 @@ CREATE TABLE IF NOT EXISTS `restaurant` (
   `contact` varchar(30) COLLATE utf8_bin NOT NULL,
   `address` varchar(30) COLLATE utf8_bin NOT NULL,
   `city` varchar(30) COLLATE utf8_bin NOT NULL,
-  `host` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  `host` int(11) NOT NULL,
+  `picture` varchar(250) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -232,20 +237,6 @@ CREATE TABLE IF NOT EXISTS `stock` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supplier`
---
-
-CREATE TABLE IF NOT EXISTS `supplier` (
-`id` int(11) NOT NULL,
-  `name` varchar(30) COLLATE utf8_bin NOT NULL,
-  `contact` varchar(30) COLLATE utf8_bin NOT NULL,
-  `address` varchar(30) COLLATE utf8_bin NOT NULL,
-  `city` varchar(30) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `user`
 --
 
@@ -259,14 +250,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   `name` varchar(30) COLLATE utf8_bin NOT NULL,
   `lastName` varchar(30) COLLATE utf8_bin NOT NULL,
   `privilege` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT 'user'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `username`, `email`, `password`, `contact`, `creditCard`, `name`, `lastName`, `privilege`) VALUES
-(1, 'user', 'user@gmail.com', 'user', '', '', '', '', 'user');
+(22, 'admin', 'admin@gmail.com', 'admin', '', '', 'admin', 'admin', '4');
 
 --
 -- Indexes for dumped tables
@@ -294,7 +285,7 @@ ALTER TABLE `deliversfor`
 -- Indexes for table `hasingredient`
 --
 ALTER TABLE `hasingredient`
- ADD PRIMARY KEY (`ingredientId`,`supplierId`), ADD KEY `supplierId` (`supplierId`);
+ ADD PRIMARY KEY (`ingredientId`,`supplierId`), ADD KEY `supplierId` (`supplierId`), ADD KEY `supplierId_2` (`supplierId`);
 
 --
 -- Indexes for table `images`
@@ -312,7 +303,7 @@ ALTER TABLE `ingredient`
 -- Indexes for table `meal`
 --
 ALTER TABLE `meal`
- ADD PRIMARY KEY (`id`), ADD KEY `restaurantId` (`restaurantId`), ADD KEY `categoryId` (`categoryId`);
+ ADD PRIMARY KEY (`id`), ADD KEY `restaurantId` (`restaurantId`);
 
 --
 -- Indexes for table `mealconsistsof`
@@ -348,7 +339,7 @@ ALTER TABLE `reservation`
 -- Indexes for table `reservationmenu`
 --
 ALTER TABLE `reservationmenu`
- ADD PRIMARY KEY (`mealId`,`reservationId`);
+ ADD PRIMARY KEY (`mealId`,`reservationId`), ADD KEY `reservationId` (`reservationId`);
 
 --
 -- Indexes for table `reservationsseats`
@@ -360,19 +351,13 @@ ALTER TABLE `reservationsseats`
 -- Indexes for table `restaurant`
 --
 ALTER TABLE `restaurant`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`), ADD KEY `host` (`host`);
+ ADD PRIMARY KEY (`id`), ADD KEY `host` (`host`);
 
 --
 -- Indexes for table `stock`
 --
 ALTER TABLE `stock`
  ADD PRIMARY KEY (`ingredientId`,`restaurantId`), ADD KEY `restaurantId` (`restaurantId`);
-
---
--- Indexes for table `supplier`
---
-ALTER TABLE `supplier`
- ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `user`
@@ -398,42 +383,37 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `ingredient`
 --
 ALTER TABLE `ingredient`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53;
 --
 -- AUTO_INCREMENT for table `meal`
 --
 ALTER TABLE `meal`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `rating`
 --
 ALTER TABLE `rating`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `restaurant`
 --
 ALTER TABLE `restaurant`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `supplier`
---
-ALTER TABLE `supplier`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- Constraints for dumped tables
 --
@@ -448,7 +428,7 @@ ADD CONSTRAINT `capacity_ibfk_1` FOREIGN KEY (`restaurantId`) REFERENCES `restau
 -- Constraints for table `deliversfor`
 --
 ALTER TABLE `deliversfor`
-ADD CONSTRAINT `deliversfor_ibfk_1` FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+ADD CONSTRAINT `deliversfor_ibfk_1` FOREIGN KEY (`supplierId`) REFERENCES `user` (`id`) ON DELETE CASCADE,
 ADD CONSTRAINT `deliversfor_ibfk_2` FOREIGN KEY (`restaurantId`) REFERENCES `restaurant` (`id`) ON DELETE CASCADE;
 
 --
@@ -456,7 +436,7 @@ ADD CONSTRAINT `deliversfor_ibfk_2` FOREIGN KEY (`restaurantId`) REFERENCES `res
 --
 ALTER TABLE `hasingredient`
 ADD CONSTRAINT `hasingredient_ibfk_1` FOREIGN KEY (`ingredientId`) REFERENCES `ingredient` (`id`) ON DELETE CASCADE,
-ADD CONSTRAINT `hasingredient_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`) ON DELETE CASCADE;
+ADD CONSTRAINT `hasingredient_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `images`
@@ -468,8 +448,7 @@ ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `user` (`id`) ON
 -- Constraints for table `meal`
 --
 ALTER TABLE `meal`
-ADD CONSTRAINT `meal_ibfk_1` FOREIGN KEY (`restaurantId`) REFERENCES `restaurant` (`id`) ON DELETE CASCADE,
-ADD CONSTRAINT `meal_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`) ON DELETE CASCADE;
+ADD CONSTRAINT `meal_ibfk_1` FOREIGN KEY (`restaurantId`) REFERENCES `restaurant` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `mealconsistsof`
@@ -490,7 +469,7 @@ ADD CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`orderId`) REFERENCES `orders` (
 --
 ALTER TABLE `orders`
 ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`restaurantId`) REFERENCES `restaurant` (`id`) ON DELETE CASCADE,
-ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`) ON DELETE CASCADE;
+ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `rating`
@@ -505,6 +484,12 @@ ADD CONSTRAINT `rating_ibfk_2` FOREIGN KEY (`restaurantId`) REFERENCES `restaura
 ALTER TABLE `reservation`
 ADD CONSTRAINT `reservation_ibfk_1` FOREIGN KEY (`restaurantId`) REFERENCES `restaurant` (`id`) ON DELETE CASCADE,
 ADD CONSTRAINT `reservation_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reservationmenu`
+--
+ALTER TABLE `reservationmenu`
+ADD CONSTRAINT `reservationmenu_ibfk_1` FOREIGN KEY (`reservationId`) REFERENCES `reservation` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `reservationsseats`
