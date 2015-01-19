@@ -10,7 +10,7 @@ include_once "../../resources/constants.php";
 
 class Gastro {
 
-    public function createLink(){
+    public function reateLink(){
         $data = array(
             "restaurantId" => 6,
             "timestamp" => time()
